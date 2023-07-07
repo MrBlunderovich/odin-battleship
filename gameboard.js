@@ -20,9 +20,14 @@ export function Gameboard() {
 
   function receiveAttack(squareName) {
     hits.push(squareName);
+    ships.forEach((ship) => {
+      if (ship.squares.includes(squareName)) {
+        ship.hit();
+      }
+    });
   }
 
-  function isAllSunk() {
+  function areAllSunk() {
     if (ships.length === 0) {
       return undefined;
     }
@@ -39,7 +44,7 @@ export function Gameboard() {
     ships,
     hits,
     receiveAttack,
-    isAllSunk,
+    areAllSunk,
     addShips,
   };
 }
