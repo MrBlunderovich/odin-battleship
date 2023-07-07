@@ -1,4 +1,4 @@
-const { Gameboard } = require("./index.js");
+const { Gameboard } = require("./gameboard.js");
 
 test("Gameboard ship placement", () => {
   const newBoard = Gameboard();

@@ -1,8 +1,4 @@
-const {
-  Ship,
-  squareNameToCoordinates,
-  coordinatesToSquareName,
-} = require("./index.js");
+const { Ship } = require("./ship.js");
 
 test("Ship refuses incorrect coordinates", () => {
   expect(() => Ship(["a1", "a10"])).toThrow();
@@ -28,12 +24,4 @@ test("Ship gets hits and sinks properly", () => {
   expect(newShip.isSunk).toBe(false);
   newShip.hit();
   expect(newShip.isSunk).toBe(true);
-});
-
-test("Square name and coordinates conversion", () => {
-  expect(squareNameToCoordinates("j10")[0]).toBe(9);
-  expect(squareNameToCoordinates("j10")[1]).toBe(9);
-  expect(squareNameToCoordinates(coordinatesToSquareName([1, 9]))[0]).toBe(1);
-  expect(squareNameToCoordinates(coordinatesToSquareName([1, 9]))[1]).toBe(9);
-  expect(coordinatesToSquareName(squareNameToCoordinates("d3"))[0]).toBe("d");
 });
