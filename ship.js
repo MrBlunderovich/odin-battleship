@@ -1,4 +1,4 @@
-import { squareNameToCoordinates, coordinatesToSquareName } from ".";
+import { squareNameToCoordinates, coordinatesToSquareName } from "./utilities";
 
 export function Ship([bow, stern]) {
   const coordinates = [

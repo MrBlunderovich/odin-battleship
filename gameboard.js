@@ -1,3 +1,5 @@
+import { squareNameToCoordinates, coordinatesToSquareName } from "./utilities";
+
 export function Gameboard() {
   const ships = [];
   const hits = [];

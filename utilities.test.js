@@ -1,7 +1,7 @@
 const {
   squareNameToCoordinates,
   coordinatesToSquareName,
-} = require("./index.js");
+} = require("./utilities.js");
 
 test("Square name and coordinates conversion", () => {
   expect(squareNameToCoordinates("j10")[0]).toBe(9);

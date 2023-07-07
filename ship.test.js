@@ -13,6 +13,15 @@ test("Ship exposes occupied squares", () => {
   expect(newShip.squares[1]).toBe("a2");
   expect(newShip.squares[2]).toBe("a3");
   expect(newShip.squares[3]).toBe(undefined);
+  const newerShip = Ship(["b3", "e3"]);
+  expect(newerShip.squares[0]).toBe("b3");
+  expect(newerShip.squares[1]).toBe("c3");
+  expect(newerShip.squares[2]).toBe("d3");
+  expect(newerShip.squares[3]).toBe("e3");
+  expect(newerShip.squares[4]).toBe(undefined);
+  const newestShip = Ship(["j10", "j10"]);
+  expect(newestShip.squares[0]).toBe("j10");
+  expect(newestShip.squares[1]).toBe(undefined);
 });
 
 test("Ship gets hits and sinks properly", () => {
