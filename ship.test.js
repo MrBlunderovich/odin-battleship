@@ -34,3 +34,13 @@ test("Ship gets hits and sinks properly", () => {
   newShip.hit();
   expect(newShip.isSunk).toBe(true);
 });
+
+test("Area around ship", () => {
+  const newShip = Ship(["a1", "a3"]);
+  expect(newShip.area).toContain("b1");
+  expect(newShip.area).toContain("b2");
+  expect(newShip.area).toContain("b3");
+  expect(newShip.area).toContain("b4");
+  expect(newShip.area).toContain("a4");
+  expect(newShip.area).not.toContain("a5");
+});
