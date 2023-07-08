@@ -27,3 +27,13 @@ export const defaultShips = [
   ["e1", "e3"],
   ["j1", "j4"],
 ];
+
+export function allSquares() {
+  const squares = [];
+  for (let x = 0; x <= 9; x++) {
+    for (let y = 0; y <= 9; y++) {
+      squares.push(coordinatesToSquareName([x, y]));
+    }
+  }
+  return squares;
+}

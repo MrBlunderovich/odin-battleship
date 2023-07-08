@@ -39,6 +39,12 @@ export function Gameboard() {
     return [...hits, ...sunkShipSquaresAndAreas];
   }
 
+  function unavailableSquares() {
+    return ships.reduce((acc, ship) => {
+      return [...acc, ...ship.squares, ...ship.area];
+    }, []);
+  }
+
   return {
     ships,
     hits,
