@@ -22,8 +22,9 @@ const defaultShips = [
 
 test("Gameboard receive attacks", () => {
   const newBoard = Gameboard();
+  newBoard.addShips(defaultShips);
   expect(newBoard.hits[0]).toBe(undefined);
-  newBoard.receiveAttack("a1");
+  expect(newBoard.receiveAttack("a1")).toBe(true);
   expect(newBoard.hits[0]).toBe("a1");
   expect(newBoard.hits[1]).toBe(undefined);
 });

@@ -20,11 +20,26 @@ export function Gameboard() {
 
   function receiveAttack(squareName) {
     hits.push(squareName);
-    ships.forEach((ship) => {
+    //let isSuccessful = false;
+    for (let ship of ships) {
+      console.log(ship);
       if (ship.squares.includes(squareName)) {
         ship.hit();
+        console.log(ship.isSunk);
+        return true;
       }
-    });
+    }
+    /* ships.forEach((ship) => {
+      console.log(ship);
+      if (ship.squares.includes(squareName)) {
+        ship.hit();
+        console.log(ship.isSunk);
+        isSuccessful = true;
+      }
+    }); 
+    return isSuccessful;
+    */
+    return false;
   }
 
   function areAllSunk() {
