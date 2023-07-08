@@ -29,6 +29,14 @@ test("Gameboard receive attacks", () => {
   expect(newBoard.hits[1]).toBe(undefined);
 });
 
+test("Gameboard marks hits and sunk ships' perimeter squares", () => {
+  const newBoard = Gameboard();
+  newBoard.addShips(defaultShips);
+  expect(newBoard.markedSquares().length).toBe(0);
+  newBoard.receiveAttack("a1");
+  expect(newBoard.markedSquares().length).toBe(4);
+});
+
 test("Gameboard detect defeat", () => {
   const newBoard = Gameboard();
   expect(newBoard.areAllSunk()).toBe(undefined);

@@ -32,7 +32,7 @@ export function Gameboard() {
   function markedSquares() {
     const sunkShipSquaresAndAreas = ships.reduce((acc, ship) => {
       if (ship.isSunk()) {
-        return [...acc, ...ship.squares, ...ship.area];
+        return [...acc, ...ship.area];
       }
       return acc;
     }, []);
