@@ -26,13 +26,13 @@ test("Ship exposes occupied squares", () => {
 
 test("Ship gets hits and sinks properly", () => {
   const newShip = Ship(["a1", "a3"]);
-  expect(newShip.isSunk).toBe(false);
+  expect(newShip.isSunk()).toBe(false);
   newShip.hit();
-  expect(newShip.isSunk).toBe(false);
+  expect(newShip.isSunk()).toBe(false);
   newShip.hit();
-  expect(newShip.isSunk).toBe(false);
+  expect(newShip.isSunk()).toBe(false);
   newShip.hit();
-  expect(newShip.isSunk).toBe(true);
+  expect(newShip.isSunk()).toBe(true);
 });
 
 test("Area around ship", () => {

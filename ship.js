@@ -89,10 +89,12 @@ export function Ship([bow, stern]) {
     return inBoardAreaSquareNames;
   }
 
+  function isSunk() {
+    return timesHit >= shipLength;
+  }
+
   return {
-    get isSunk() {
-      return timesHit >= shipLength;
-    },
+    isSunk,
     hit,
     squares,
     area,

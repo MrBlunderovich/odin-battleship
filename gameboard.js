@@ -1,44 +1,18 @@
 import { squareNameToCoordinates, coordinatesToSquareName } from "./utilities";
 import { Ship } from "./ship";
 
-const defaultShips = [
-  ["a1", "a1"],
-  ["a3", "a3"],
-  ["a5", "a5"],
-  ["a7", "a7"],
-  ["a9", "a10"],
-  ["c9", "c10"],
-  ["d9", "d10"],
-  ["c1", "c3"],
-  ["e1", "e3"],
-  ["j1", "j4"],
-];
-
 export function Gameboard() {
   const ships = [];
   const hits = [];
 
   function receiveAttack(squareName) {
     hits.push(squareName);
-    //let isSuccessful = false;
     for (let ship of ships) {
-      console.log(ship);
       if (ship.squares.includes(squareName)) {
         ship.hit();
-        console.log(ship.isSunk);
         return true;
       }
     }
-    /* ships.forEach((ship) => {
-      console.log(ship);
-      if (ship.squares.includes(squareName)) {
-        ship.hit();
-        console.log(ship.isSunk);
-        isSuccessful = true;
-      }
-    }); 
-    return isSuccessful;
-    */
     return false;
   }
 
@@ -47,12 +21,22 @@ export function Gameboard() {
       return undefined;
     }
     return ships.reduce((verdict, currentShip) => {
-      return verdict && currentShip.isSunk;
+      return verdict && currentShip.isSunk();
     }, true);
   }
 
   function addShips(coordinates) {
     coordinates.forEach((item) => ships.push(Ship(item)));
+  }
+
+  function markedSquares() {
+    const sunkShipSquaresAndAreas = ships.reduce((acc, ship) => {
+      if (ship.isSunk()) {
+        return [...acc, ...ship.squares, ...ship.area];
+      }
+      return acc;
+    }, []);
+    return [...hits, ...sunkShipSquaresAndAreas];
   }
 
   return {
@@ -61,5 +45,6 @@ export function Gameboard() {
     receiveAttack,
     areAllSunk,
     addShips,
+    markedSquares,
   };
 }
