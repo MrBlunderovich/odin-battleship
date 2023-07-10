@@ -1,6 +1,8 @@
-import { coordinatesToSquareName } from "./utilities";
+import { coordinatesToSquareName, defaultShips } from "./utilities";
 
-export function Player(humanOrMachine) {
+export function Player(humanOrMachine, gameboard) {
+  const board = gameboard;
+  let isActive = false;
   let isHuman = undefined;
   if (humanOrMachine === "human") {
     isHuman = true;
@@ -9,12 +11,11 @@ export function Player(humanOrMachine) {
   }
 
   function makeMove(markedSquares = []) {
-    //if human, wait for input
-    //if machine, pick a legal square to hit
+    isActive = true;
     if (isHuman === false) {
+      isActive = false;
       return computerMove(markedSquares);
     }
-    //return square
   }
 
   function computerMove(markedSquares) {
@@ -32,5 +33,11 @@ export function Player(humanOrMachine) {
     }
   }
 
-  return { makeMove };
+  function populateBoard(defaultPlacement = false) {
+    if (defaultPlacement) {
+      board.addShips(defaultShips);
+    }
+  }
+
+  return { makeMove, board, isHuman, populateBoard };
 }
