@@ -12,6 +12,6 @@ test("Player makes move", () => {
 
 test("Player can populate his gameboard with ships", () => {
   const player = Player("human", Gameboard());
-  player.populateBoard(true);
+  player.populateBoard("default");
   expect(player.board.ships.length).toBe(10);
 });

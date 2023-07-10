@@ -1,5 +1,4 @@
-import { squareNameToCoordinates, coordinatesToSquareName } from "./utilities";
-import { Ship } from "./ship";
+import { Ship } from "./ship.js";
 
 export function Gameboard() {
   const ships = [];
@@ -45,6 +44,12 @@ export function Gameboard() {
     }, []);
   }
 
+  function shipSquares() {
+    return ships.reduce((acc, ship) => {
+      return acc.concat(ship.squares);
+    }, []);
+  }
+
   return {
     ships,
     hits,
@@ -52,5 +57,6 @@ export function Gameboard() {
     areAllSunk,
     addShips,
     markedSquares,
+    shipSquares,
   };
 }

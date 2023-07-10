@@ -1,4 +1,4 @@
-import { coordinatesToSquareName, defaultShips } from "./utilities";
+import { coordinatesToSquareName, defaultShips } from "./utilities.js";
 
 export function Player(humanOrMachine, gameboard) {
   const board = gameboard;
@@ -33,8 +33,8 @@ export function Player(humanOrMachine, gameboard) {
     }
   }
 
-  function populateBoard(defaultPlacement = false) {
-    if (defaultPlacement) {
+  function populateBoard(placement = null) {
+    if (placement === "default") {
       board.addShips(defaultShips);
     }
   }

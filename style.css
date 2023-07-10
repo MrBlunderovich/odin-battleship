@@ -6,6 +6,7 @@
   --light-yellow: #f3da63;
   --dark-yellow: #e1b82b;
   --red: #b44436;
+  --border: 1px solid var(--dark-blue);
 }
 
 * {
@@ -13,18 +14,74 @@
   font-family: inherit;
   margin: 0;
   padding: 0;
+  color: var(--dark-blue);
 }
 
 body {
-  background: linear-gradient(
-    0,
-    var(--dark-blue),
-    var(--light-blue),
-    var(--dark-blue)
-  );
   min-height: 100vh;
   min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+header {
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--dark-blue);
+}
+
+.main {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.game-container {
+  padding: 1rem;
+  border: var(--border);
+  border-radius: 5px;
+  width: 90vmin;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(370px, 1fr));
+}
+
+.board-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.board {
+  border: var(--border);
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  margin: 1rem;
+}
+
+.square {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid #78b4ca;
+  /* outline: 1px solid #78b4ca; */
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+
+.square::before {
+  content: attr(data-name);
+  font-size: 0.5rem;
+  color: #c4c4c4;
+  margin: 0.3rem;
+}
+
+.ship {
+  background-color: #b4ebff;
+}
+
+.marked::after {
+  content: "*";
+}
+
+.hit::after {
+  content: "X";
 }
