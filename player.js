@@ -14,7 +14,12 @@ export function Player(humanOrMachine, gameboard) {
     isActive = true;
     if (isHuman === false) {
       isActive = false;
-      return computerMove(markedSquares);
+      //return computerMove(markedSquares);
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(computerMove(markedSquares));
+        }, 500);
+      });
     }
   }
 

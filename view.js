@@ -1,13 +1,18 @@
 import { coordinatesToSquareName } from "./utilities.js";
 
 export const View = (function () {
+  let callbacks = null;
   const playerBoard = document.querySelector(".board.player");
   const opponentBoard = document.querySelector(".board.opponent");
   document.addEventListener("click", handleClick);
 
   function handleClick(event) {
-    if (event.target.matches(".square")) {
+    if (event.target.matches(".opponent .square")) {
       console.log(event.target.dataset.name);
+      if (callbacks) {
+        callbacks.resolve(event.target.dataset.name);
+        callbacks = null;
+      }
     }
   }
 
@@ -67,15 +72,17 @@ export const View = (function () {
     return newSquare;
   }
 
-  function clearBoards() {
+  /* function clearBoards() {
     [playerBoard, opponentBoard].forEach((board) => {
       board.innerHTML = "";
     });
-  }
+  } */
 
   return {
     createBoards,
-    clearBoards,
     render,
+    set movePromiseCallbacks(cb) {
+      callbacks = cb;
+    },
   };
 })();
