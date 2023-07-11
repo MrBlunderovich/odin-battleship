@@ -20,7 +20,12 @@ export const View = (function () {
       }
     }
     if (event.target.matches(".new-game")) {
-      newGameCallback();
+      if (event.ctrlKey) {
+        const AUTO = true;
+        newGameCallback(AUTO);
+      } else {
+        newGameCallback();
+      }
     }
   }
 

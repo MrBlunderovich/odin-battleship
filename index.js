@@ -6,8 +6,15 @@ const boards = [];
 const players = [];
 let winner = null;
 let playersMove = null;
+let AIautoplay = false;
 
-function newGame() {
+function newGame(auto = false) {
+  winner = "0";
+  if (auto) {
+    AIautoplay = true;
+  } else {
+    AIautoplay = false;
+  }
   boards.length = 0;
   players.length = 0;
   boards.push(Gameboard(), Gameboard());
@@ -16,13 +23,12 @@ function newGame() {
   players.forEach((player) => player.populateBoard("default"));
   View.createBoards();
   View.render(boards);
+  View.newGameCB = newGame;
   loop();
 }
 
 async function loop() {
-  View.newGameCB = newGame;
-  playersMove = true;
-  //playersMove = false;
+  playersMove = AIautoplay ? false : true;
   while (!winner) {
     if (playersMove) {
       const move = await new Promise((resolve, reject) => {
@@ -44,15 +50,18 @@ async function loop() {
       const markedSquares = players[0].board.markedSquares();
       const move = await players[1].makeMove(markedSquares);
       console.log("AI shoots: ", move);
-      players[0].board.receiveAttack(move);
+      const success = players[0].board.receiveAttack(move);
+      if (success) {
+        playersMove = true;
+      }
       if (players[0].board.areAllSunk()) {
         winner = "opponent";
       }
     }
-    playersMove = !playersMove;
+    playersMove = AIautoplay ? playersMove : !playersMove;
     View.render(boards);
   }
-  console.log(winner + "wins");
+  console.log(winner + " wins");
 }
 
 newGame();
