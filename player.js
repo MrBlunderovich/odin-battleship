@@ -1,4 +1,8 @@
-import { coordinatesToSquareName, defaultShips } from "./utilities.js";
+import {
+  coordinatesToSquareName,
+  defaultShips,
+  allSquares,
+} from "./utilities.js";
 
 export function Player(humanOrMachine, gameboard) {
   const playerDescription = humanOrMachine;
@@ -22,13 +26,26 @@ export function Player(humanOrMachine, gameboard) {
       //return computerMove(markedSquares);
       return new Promise((resolve) => {
         setTimeout(() => {
-          resolve(computerMove(markedSquares));
-        }, 500);
+          resolve(computerMoveBetter(markedSquares));
+        }, 300);
       });
     }
   }
 
-  function computerMove(markedSquares) {
+  const allPossibleSquares = allSquares();
+
+  function computerMoveBetter(markedSquares) {
+    const candidateSquares = allPossibleSquares.filter((square) => {
+      return !markedSquares.includes(square);
+    });
+    if (candidateSquares.length === 0) {
+      console.error("Unable to make a move");
+    }
+    const target = Math.floor(Math.random() * candidateSquares.length);
+    return candidateSquares[target];
+  }
+
+  /* function computerMove(markedSquares) {
     let target = newTarget();
     while (markedSquares.includes(target)) {
       target = newTarget();
@@ -41,7 +58,7 @@ export function Player(humanOrMachine, gameboard) {
     function randomNumber() {
       return Math.floor(Math.random() * 10);
     }
-  }
+  } */
 
   function populateBoard(placement = null) {
     if (placement === "default") {

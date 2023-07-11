@@ -32,11 +32,10 @@ async function loop() {
   while (!winner) {
     const currentPlayer = playersMove ? players[0] : players[1];
     const nextPlayer = playersMove ? players[1] : players[0];
-    let shotIsSuccessful = false;
     const markedSquares = nextPlayer.board.markedSquares();
     const move = await currentPlayer.makeMove(markedSquares, View);
     console.log("theMove: ", move);
-    shotIsSuccessful = nextPlayer.board.receiveAttack(move);
+    const shotIsSuccessful = nextPlayer.board.receiveAttack(move);
     if (nextPlayer.board.areAllSunk()) {
       winner = currentPlayer.playerDescription;
     }
