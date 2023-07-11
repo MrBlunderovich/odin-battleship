@@ -30,30 +30,15 @@ function newGame(auto = false) {
 async function loop() {
   playersMove = AIautoplay ? false : true;
   while (!winner) {
+    const currentPlayer = playersMove ? players[0] : players[1];
+    const nextPlayer = playersMove ? players[1] : players[0];
     let shotIsSuccessful = false;
-    if (playersMove) {
-      const move = await new Promise((resolve) => {
-        View.movePromiseCallback = resolve;
-      });
-      console.log("move", move);
-      if (move === "restart") {
-        newGame();
-        break;
-      }
-      shotIsSuccessful = players[1].board.receiveAttack(move);
-
-      if (players[1].board.areAllSunk()) {
-        winner = "player";
-      }
-    } else {
-      const markedSquares = players[0].board.markedSquares();
-      const move = await players[1].makeMove(markedSquares);
-      console.log("AI shoots: ", move);
-      shotIsSuccessful = players[0].board.receiveAttack(move);
-
-      if (players[0].board.areAllSunk()) {
-        winner = "opponent";
-      }
+    const markedSquares = nextPlayer.board.markedSquares();
+    const move = await currentPlayer.makeMove(markedSquares, View);
+    console.log("theMove: ", move);
+    shotIsSuccessful = nextPlayer.board.receiveAttack(move);
+    if (nextPlayer.board.areAllSunk()) {
+      winner = currentPlayer.playerDescription;
     }
     if (!shotIsSuccessful) {
       playersMove = AIautoplay ? playersMove : !playersMove;

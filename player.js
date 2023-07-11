@@ -1,6 +1,7 @@
 import { coordinatesToSquareName, defaultShips } from "./utilities.js";
 
 export function Player(humanOrMachine, gameboard) {
+  const playerDescription = humanOrMachine;
   const board = gameboard;
   let isActive = false;
   let isHuman = undefined;
@@ -10,9 +11,13 @@ export function Player(humanOrMachine, gameboard) {
     isHuman = false;
   }
 
-  function makeMove(markedSquares = []) {
+  function makeMove(markedSquares = [], View) {
     isActive = true;
-    if (isHuman === false) {
+    if (isHuman === true) {
+      return new Promise((resolve) => {
+        View.movePromiseCallback = resolve;
+      });
+    } else if (isHuman === false) {
       isActive = false;
       //return computerMove(markedSquares);
       return new Promise((resolve) => {
@@ -44,5 +49,5 @@ export function Player(humanOrMachine, gameboard) {
     }
   }
 
-  return { makeMove, board, isHuman, populateBoard };
+  return { makeMove, board, isHuman, populateBoard, playerDescription };
 }
