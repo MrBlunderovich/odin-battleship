@@ -1,6 +1,7 @@
 import { coordinatesToSquareName } from "./utilities.js";
 
 export const View = (function () {
+  let newGameCallback = () => console.error("no callback yet");
   let callbacks = null;
   const playerBoard = document.querySelector(".board.player");
   const opponentBoard = document.querySelector(".board.opponent");
@@ -13,6 +14,9 @@ export const View = (function () {
         callbacks.resolve(event.target.dataset.name);
         callbacks = null;
       }
+    }
+    if (event.target.matches(".new-game")) {
+      newGameCallback();
     }
   }
 
@@ -51,6 +55,7 @@ export const View = (function () {
 
   function createBoards() {
     [playerBoard, opponentBoard].forEach((board) => {
+      board.innerHTML = "";
       const owner = board.dataset.owner;
       const fragment = document.createDocumentFragment();
       for (let y = 0; y <= 9; y++) {
@@ -83,6 +88,9 @@ export const View = (function () {
     render,
     set movePromiseCallbacks(cb) {
       callbacks = cb;
+    },
+    set newGameCB(cb) {
+      newGameCallback = cb;
     },
   };
 })();

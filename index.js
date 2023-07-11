@@ -8,6 +8,8 @@ let winner = null;
 let playersMove = null;
 
 function newGame() {
+  boards.length = 0;
+  players.length = 0;
   boards.push(Gameboard(), Gameboard());
   players.push(Player("human", boards[0]), Player("machine", boards[1]));
   winner = null;
@@ -17,14 +19,18 @@ function newGame() {
 }
 
 async function loop() {
+  View.newGameCB = newGame;
   playersMove = true;
   while (!winner) {
     if (playersMove) {
-      View.isPlayersMove = true;
       const move = await new Promise((resolve, reject) => {
         View.movePromiseCallbacks = { resolve, reject };
       });
       console.log("move", move);
+      if (move === "restart") {
+        newGame();
+        break;
+      }
       players[1].board.receiveAttack(move);
       if (players[1].board.areAllSunk()) {
         winner = "player";
