@@ -22,6 +22,7 @@ function newGame() {
 async function loop() {
   View.newGameCB = newGame;
   playersMove = true;
+  //playersMove = false;
   while (!winner) {
     if (playersMove) {
       const move = await new Promise((resolve, reject) => {
@@ -40,7 +41,9 @@ async function loop() {
         winner = "player";
       }
     } else {
-      const move = await players[1].makeMove();
+      const markedSquares = players[0].board.markedSquares();
+      const move = await players[1].makeMove(markedSquares);
+      console.log("AI shoots: ", move);
       players[0].board.receiveAttack(move);
       if (players[0].board.areAllSunk()) {
         winner = "opponent";

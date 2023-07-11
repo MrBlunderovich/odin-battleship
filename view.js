@@ -9,10 +9,13 @@ export const View = (function () {
 
   function handleClick(event) {
     if (event.target.matches(".opponent .square")) {
-      console.log(event.target.dataset.name);
+      if (event.target.matches(".marked")) {
+        return;
+      }
+      const move = event.target.dataset.name;
+      console.log(move);
       if (callbacks) {
-        console.log("yes callbacks");
-        callbacks.resolve(event.target.dataset.name);
+        callbacks.resolve(move);
         callbacks = null;
       }
     }

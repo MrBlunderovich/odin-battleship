@@ -34,7 +34,7 @@ export function Player(humanOrMachine, gameboard) {
       return coordinatesToSquareName([randomNumber(), randomNumber()]);
     }
     function randomNumber() {
-      return Math.floor(Math.random() * 9);
+      return Math.floor(Math.random() * 10);
     }
   }
 
