@@ -2,7 +2,7 @@ import { coordinatesToSquareName } from "./utilities.js";
 
 export const View = (function () {
   let newGameCallback = () => console.error("no callback yet");
-  let callbacks = null;
+  let callback = null;
   const playerBoard = document.querySelector(".board.player");
   const opponentBoard = document.querySelector(".board.opponent");
   document.addEventListener("click", handleClick);
@@ -14,9 +14,9 @@ export const View = (function () {
       }
       const move = event.target.dataset.name;
       console.log(move);
-      if (callbacks) {
-        callbacks.resolve(move);
-        callbacks = null;
+      if (callback) {
+        callback(move);
+        callback = null;
       }
     }
     if (event.target.matches(".new-game")) {
@@ -95,8 +95,8 @@ export const View = (function () {
   return {
     createBoards,
     render,
-    set movePromiseCallbacks(cb) {
-      callbacks = cb;
+    set movePromiseCallback(cb) {
+      callback = cb;
     },
     set newGameCB(cb) {
       newGameCallback = cb;
