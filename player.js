@@ -2,6 +2,7 @@ import {
   coordinatesToSquareName,
   defaultShips,
   allSquares,
+  squareNameToCoordinates,
 } from "./utilities.js";
 
 export function Player(humanOrMachine, gameboard) {
@@ -15,7 +16,7 @@ export function Player(humanOrMachine, gameboard) {
     isHuman = false;
   }
 
-  function makeMove(markedSquares = [], View) {
+  function makeMove(opponentsBoard, View) {
     isActive = true;
     if (isHuman === true) {
       return new Promise((resolve) => {
@@ -26,7 +27,7 @@ export function Player(humanOrMachine, gameboard) {
       //return computerMove(markedSquares);
       return new Promise((resolve) => {
         setTimeout(() => {
-          resolve(computerMoveBetter(markedSquares));
+          resolve(computerMoveBetter(opponentsBoard));
         }, 300);
       });
     }
@@ -34,8 +35,13 @@ export function Player(humanOrMachine, gameboard) {
 
   const allPossibleSquares = allSquares();
 
-  function computerMoveBetter(markedSquares) {
-    const candidateSquares = allPossibleSquares.filter((square) => {
+  function computerMoveBetter(opponentsBoard) {
+    const markedSquares = opponentsBoard.markedSquares();
+    const previousGoodHit = opponentsBoard.previousGoodHit;
+    const potentialSquares = previousGoodHit
+      ? adjacentSquares(previousGoodHit)
+      : allPossibleSquares;
+    const candidateSquares = potentialSquares.filter((square) => {
       return !markedSquares.includes(square);
     });
     if (candidateSquares.length === 0) {
@@ -43,6 +49,26 @@ export function Player(humanOrMachine, gameboard) {
     }
     const target = Math.floor(Math.random() * candidateSquares.length);
     return candidateSquares[target];
+  }
+
+  function adjacentSquares(square) {
+    console.log("PGH: ", squareNameToCoordinates(square));
+    const [x, y] = squareNameToCoordinates(square);
+    const adjacent = [
+      [x, y + 1],
+      [x, y - 1],
+      [x + 1, y],
+      [x - 1, y],
+    ];
+    const adjacentOnBoard = adjacent.filter((coordinates) => {
+      const [x, y] = coordinates;
+      return !(x < 0 || y < 0 || x > 9 || y > 9);
+    });
+    const result = adjacentOnBoard.map((square) =>
+      coordinatesToSquareName(square)
+    );
+    console.log("adjacent: ", result);
+    return result;
   }
 
   /* function computerMove(markedSquares) {
