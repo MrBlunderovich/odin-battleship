@@ -4,10 +4,10 @@ const { Gameboard } = require("./gameboard.js");
 
 const allSquaresButD6 = allSquares().filter((item) => item !== "d6");
 
-test("Player makes move", () => {
+test("AI makes move", async () => {
   const player = Player("machine");
   expect(player.makeMove()).toBeTruthy();
-  expect(player.makeMove(allSquaresButD6)).toBe("d6");
+  expect(await player.makeMove(allSquaresButD6)).toBe("d6");
 });
 
 test("Player can populate his gameboard with ships", () => {

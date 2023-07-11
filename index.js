@@ -16,6 +16,7 @@ function newGame() {
   players.forEach((player) => player.populateBoard("default"));
   View.createBoards();
   View.render(boards);
+  loop();
 }
 
 async function loop() {
@@ -31,7 +32,10 @@ async function loop() {
         newGame();
         break;
       }
-      players[1].board.receiveAttack(move);
+      const success = players[1].board.receiveAttack(move);
+      if (success) {
+        playersMove = false;
+      } //playersMove will be toggled back
       if (players[1].board.areAllSunk()) {
         winner = "player";
       }
@@ -49,4 +53,3 @@ async function loop() {
 }
 
 newGame();
-loop();

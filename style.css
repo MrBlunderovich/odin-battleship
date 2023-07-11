@@ -97,6 +97,10 @@ button:active {
   content: "*";
 }
 
+.hit {
+  background-color: #ffa5a5;
+}
+
 .hit::after {
   content: "X";
 }

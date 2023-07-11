@@ -11,6 +11,7 @@ export const View = (function () {
     if (event.target.matches(".opponent .square")) {
       console.log(event.target.dataset.name);
       if (callbacks) {
+        console.log("yes callbacks");
         callbacks.resolve(event.target.dataset.name);
         callbacks = null;
       }
