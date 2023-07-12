@@ -3,14 +3,18 @@ import { Ship } from "./ship.js";
 export function Gameboard() {
   const ships = [];
   const hits = [];
-  let thePreviousGoodHit = null;
+  const goodShots = [];
 
   function receiveAttack(squareName) {
     hits.push(squareName);
     for (let ship of ships) {
       if (ship.squares.includes(squareName)) {
         ship.hit();
-        thePreviousGoodHit = ship.isSunk() ? null : squareName;
+        if (ship.isSunk()) {
+          goodShots.length = 0;
+        } else {
+          goodShots.push(squareName);
+        }
         return true;
       }
     }
@@ -55,9 +59,7 @@ export function Gameboard() {
   return {
     ships,
     hits,
-    get previousGoodHit() {
-      return thePreviousGoodHit;
-    },
+    goodShots,
     receiveAttack,
     areAllSunk,
     addShips,

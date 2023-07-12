@@ -32,19 +32,30 @@ async function loop() {
   while (!winner) {
     const currentPlayer = playersMove ? players[0] : players[1];
     const nextPlayer = playersMove ? players[1] : players[0];
-    //const markedSquares = nextPlayer.board.markedSquares();
-    const move = await currentPlayer.makeMove(nextPlayer.board, View);
-    console.log("theMove: ", move);
+    let move = undefined;
+    try {
+      move = await currentPlayer.makeMove(nextPlayer.board, View);
+    } catch (error) {
+      console.error(error);
+      break;
+    }
+    console.log("Move: ", move);
     const shotIsSuccessful = nextPlayer.board.receiveAttack(move);
+
     if (nextPlayer.board.areAllSunk()) {
-      winner = currentPlayer.playerDescription;
+      winner = currentPlayer;
     }
     if (!shotIsSuccessful) {
       playersMove = AIautoplay ? playersMove : !playersMove;
     }
+
+    View.setStatus(
+      nextPlayer.playerDescription === "human" ? "Your move" : "Computer's move"
+    );
     View.render(boards);
   }
-  console.log(winner + " wins");
+  console.log(winner.playerDescription + " wins");
+  View.setStatus(winner.playerDescription + " wins");
 }
 
 newGame();

@@ -3,8 +3,10 @@ import { coordinatesToSquareName } from "./utilities.js";
 export const View = (function () {
   let newGameCallback = () => console.error("no callback yet");
   let callback = null;
+  let status = "Ready to start";
   const playerBoard = document.querySelector(".board.player");
   const opponentBoard = document.querySelector(".board.opponent");
+  const display = document.querySelector(".status");
   document.addEventListener("click", handleClick);
 
   function handleClick(event) {
@@ -44,6 +46,7 @@ export const View = (function () {
       }
       //square.classList.add("square");
     });
+    display.textContent = status;
   }
 
   function setSquareClasses(square, gameboard, isPlayer = false) {
@@ -86,6 +89,10 @@ export const View = (function () {
     return newSquare;
   }
 
+  function setStatus(newStatus) {
+    status = newStatus;
+  }
+
   /* function clearBoards() {
     [playerBoard, opponentBoard].forEach((board) => {
       board.innerHTML = "";
@@ -101,5 +108,6 @@ export const View = (function () {
     set newGameCB(cb) {
       newGameCallback = cb;
     },
+    setStatus,
   };
 })();

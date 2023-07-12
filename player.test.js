@@ -2,12 +2,18 @@ const { Player } = require("./player.js");
 const { allSquares } = require("./utilities.js");
 const { Gameboard } = require("./gameboard.js");
 
-const allSquaresButD6 = allSquares().filter((item) => item !== "d6");
-
 test("AI makes move", async () => {
+  const allSquaresButD6 = allSquares().filter((item) => item !== "d6");
   const player = Player("machine");
   //expect(player.makeMove()).toBeTruthy();
-  expect(await player.makeMove(allSquaresButD6)).toBe("d6");
+  function markedSquares() {
+    return allSquaresButD6;
+  }
+  const opponentsBoard = {
+    markedSquares,
+    goodShots: [],
+  };
+  expect(await player.makeMove(opponentsBoard)).toBe("d6");
 });
 
 test("Player can populate his gameboard with ships", () => {

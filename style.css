@@ -54,6 +54,17 @@ button:active {
   padding: 1rem;
   border: var(--border);
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.status {
+  text-align: center;
+  margin: 1rem;
+  text-transform: capitalize;
+}
+
+.grid-container {
   width: 90vmin;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(370px, 1fr));
@@ -87,7 +98,6 @@ button:active {
 /* .square::before {
   content: attr(data-name);
   font-size: 0.5rem;
-  color: #c4c4c4;
   margin: 0.3rem;
 } */
 
