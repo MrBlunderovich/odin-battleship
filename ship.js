@@ -1,6 +1,7 @@
 import {
   squareNameToCoordinates,
   coordinatesToSquareName,
+  getAreaAroundShip,
 } from "./utilities.js";
 
 export function Ship([bow, stern]) {
@@ -62,9 +63,9 @@ export function Ship([bow, stern]) {
     timesHit += 1;
   }
 
-  const area = getAreaAroundShip();
+  const area = getAreaAroundShip(coordinates);
 
-  function getAreaAroundShip() {
+  /* function getAreaAroundShip(coordinates) {
     const area = [];
     let highCorner = undefined;
     let lowCorner = undefined;
@@ -90,7 +91,7 @@ export function Ship([bow, stern]) {
       coordinatesToSquareName(coords)
     );
     return inBoardAreaSquareNames;
-  }
+  } */
 
   function isSunk() {
     return timesHit >= shipLength;

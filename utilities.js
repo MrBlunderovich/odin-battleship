@@ -37,3 +37,37 @@ export function allSquares() {
   }
   return squares;
 }
+
+export function getAreaAroundShip(coordinates) {
+  const area = [];
+  let highCorner = undefined;
+  let lowCorner = undefined;
+  if (coordinates[0] + coordinates[1] > coordinates[2] + coordinates[3]) {
+    highCorner = [coordinates[0] + 1, coordinates[1] + 1];
+    lowCorner = [coordinates[2] - 1, coordinates[3] - 1];
+  } else {
+    lowCorner = [coordinates[0] - 1, coordinates[1] - 1];
+    highCorner = [coordinates[2] + 1, coordinates[3] + 1];
+  }
+  for (let x = lowCorner[0]; x <= highCorner[0]; x++) {
+    area.push([x, lowCorner[1]], [x, highCorner[1]]);
+  }
+  for (let y = lowCorner[1] + 1; y < highCorner[1]; y++) {
+    area.push([lowCorner[0], y], [highCorner[0], y]);
+  }
+  const inBoardArea = area.filter((coords) => {
+    return coords[0] >= 0 && coords[1] >= 0 && coords[0] <= 9 && coords[1] <= 9;
+  });
+  const inBoardAreaSquareNames = inBoardArea.map((coords) =>
+    coordinatesToSquareName(coords)
+  );
+  return inBoardAreaSquareNames;
+}
+
+export function sortShips(ships) {
+  return [...ships].sort((a, b) => {
+    const a0 = a[0];
+    const b0 = b[0];
+    return a0 > b0 ? 1 : -1;
+  });
+}

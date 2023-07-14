@@ -1,6 +1,8 @@
 const {
   squareNameToCoordinates,
   coordinatesToSquareName,
+  checkCompliance,
+  defaultShips,
 } = require("./utilities.js");
 
 test("Square name and coordinates conversion", () => {

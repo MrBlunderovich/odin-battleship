@@ -1,7 +1,9 @@
 import { coordinatesToSquareName } from "./utilities.js";
+import { composeShipCoordinates } from "./ship_placement.js";
 
 export const View = (function () {
   let newGameCallback = () => console.error("no callback yet");
+  let positionShipsCB = () => console.error("no callback yet");
   let callback = null;
   let status = "Ready to start";
   const playerBoard = document.querySelector(".board.player");
@@ -10,6 +12,17 @@ export const View = (function () {
   document.addEventListener("click", handleClick);
 
   function handleClick(event) {
+    if (event.target.matches(".player .square")) {
+      const square = event.target;
+      square.classList.toggle("ship");
+      const shipSquares = square.parentElement.querySelectorAll(".ship");
+      const shipSquareNames = Array.from(shipSquares).map(
+        (square) => square.dataset.name
+      );
+      const newShipCoordinates = composeShipCoordinates(shipSquareNames);
+      console.log(newShipCoordinates);
+    }
+
     if (event.target.matches(".opponent .square")) {
       if (event.target.matches(".marked")) {
         return;
@@ -21,6 +34,7 @@ export const View = (function () {
         callback = null;
       }
     }
+
     if (event.target.matches(".new-game")) {
       if (event.ctrlKey) {
         const AUTO = true;
@@ -106,6 +120,9 @@ export const View = (function () {
       callback = cb;
     },
     set newGameCB(cb) {
+      newGameCallback = cb;
+    },
+    set positionShipsCB(cb) {
       newGameCallback = cb;
     },
     setStatus,

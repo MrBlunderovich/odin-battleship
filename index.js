@@ -24,8 +24,13 @@ function newGame(auto = false) {
   View.createBoards();
   View.render(boards);
   View.newGameCB = newGame;
+  //View.newGameCB = positionShips;
   loop();
 }
+
+/* function positionShips() {
+  console.log("position ships");
+} */
 
 async function loop() {
   playersMove = AIautoplay ? false : true;
@@ -56,6 +61,7 @@ async function loop() {
   }
   console.log(winner.playerDescription + " wins");
   View.setStatus(winner.playerDescription + " wins");
+  View.render(boards);
 }
 
 newGame();
