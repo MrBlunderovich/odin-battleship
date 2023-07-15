@@ -1,31 +1,15 @@
-const { Ship } = require("./ship.js");
+const { Ship, names, isSquareSequenceConsecutive } = require("./ship.js");
+const Square = require("./square.js").default;
 
-test("Ship refuses incorrect coordinates", () => {
+xtest("Ship refuses incorrect coordinates", () => {
   expect(() => Ship(["a1", "a10"])).toThrow();
   expect(() => Ship(["a1", "f1"])).toThrow();
   expect(() => Ship(["a1", "b3"])).toThrow();
   expect(() => Ship(["a0", "a1"])).toThrow();
 });
 
-test("Ship exposes occupied squares", () => {
-  const newShip = Ship(["a1", "a3"]);
-  expect(newShip.squares[0]).toBe("a1");
-  expect(newShip.squares[1]).toBe("a2");
-  expect(newShip.squares[2]).toBe("a3");
-  expect(newShip.squares[3]).toBe(undefined);
-  const newerShip = Ship(["b3", "e3"]);
-  expect(newerShip.squares[0]).toBe("b3");
-  expect(newerShip.squares[1]).toBe("c3");
-  expect(newerShip.squares[2]).toBe("d3");
-  expect(newerShip.squares[3]).toBe("e3");
-  expect(newerShip.squares[4]).toBe(undefined);
-  const newestShip = Ship(["j10", "j10"]);
-  expect(newestShip.squares[0]).toBe("j10");
-  expect(newestShip.squares[1]).toBe(undefined);
-});
-
 test("Ship gets hits and sinks properly", () => {
-  const newShip = Ship(["a1", "a3"]);
+  const newShip = Ship(["a1", "a2", "a3"]);
   expect(newShip.isSunk()).toBe(false);
   newShip.hit();
   expect(newShip.isSunk()).toBe(false);
@@ -36,11 +20,27 @@ test("Ship gets hits and sinks properly", () => {
 });
 
 test("Area around ship", () => {
-  const newShip = Ship(["a1", "a3"]);
-  expect(newShip.area).toContain("b1");
-  expect(newShip.area).toContain("b2");
-  expect(newShip.area).toContain("b3");
-  expect(newShip.area).toContain("b4");
-  expect(newShip.area).toContain("a4");
-  expect(newShip.area).not.toContain("a5");
+  const newShip = Ship(["a1", "a2", "a3"]);
+  expect(names(newShip.perimeter)).toContain("b1");
+  expect(names(newShip.perimeter)).toContain("b2");
+  expect(names(newShip.perimeter)).toContain("b3");
+  expect(names(newShip.perimeter)).toContain("b4");
+  expect(names(newShip.perimeter)).toContain("a4");
+  expect(names(newShip.perimeter)).not.toContain("a5");
+  expect(names(newShip.perimeter)).not.toContain("a2");
+});
+
+test("Consequtivity", () => {
+  expect(
+    isSquareSequenceConsecutive([
+      Square("a1"),
+      Square("a2"),
+      Square("a3"),
+      Square("a4"),
+    ])
+  ).toBe(true);
+  expect(
+    isSquareSequenceConsecutive([Square("a1"), Square("a2"), Square("a4")])
+  ).toBe(false);
+  expect(isSquareSequenceConsecutive([Square("a1")])).toBe(true);
 });

@@ -1,106 +1,134 @@
-import {
-  squareNameToCoordinates,
-  coordinatesToSquareName,
-  getAreaAroundShip,
-} from "./utilities.js";
+import Square from "./square.js";
 
-export function Ship([bow, stern]) {
-  const coordinates = [
-    ...squareNameToCoordinates(bow),
-    ...squareNameToCoordinates(stern),
-  ];
-  let shipLength = null;
-  let shipIsVertical = null;
-  if (coordinates[0] === coordinates[2]) {
-    shipIsVertical = true;
-    shipLength = checkLength(coordinates[1], coordinates[3]);
-  } else if (coordinates[1] === coordinates[3]) {
-    shipIsVertical = false;
-    shipLength = checkLength(coordinates[0], coordinates[2]);
-  } else {
-    throw new Error("invalid coordinates");
+export function Ship(arrayOfSquareNames) {
+  const arrayOfSquareObjects = arrayOfSquareNames.map((name) => Square(name));
+  const _squares = sortSquares(arrayOfSquareObjects);
+  if (!validateInput(_squares)) {
+    return null;
   }
-
-  function checkLength(start, end) {
-    const length = Math.abs(start - end) + 1;
-    if (length > 4) {
-      throw new Error("too long a ship");
-    }
-    return length;
-  }
-
-  const squares = shipSquares();
-
-  function shipSquares() {
-    if (shipLength === 1) {
-      return [bow];
-    }
-    if (shipLength === 2) {
-      return [bow, stern];
-    }
-    const squares = [];
-    if (shipIsVertical) {
-      const x = coordinates[0];
-      const yStart = Math.min(coordinates[1], coordinates[3]);
-      const yEnd = Math.max(coordinates[1], coordinates[3]);
-      for (let y = yStart; y <= yEnd; y++) {
-        squares.push(coordinatesToSquareName([x, y]));
-      }
-    } else {
-      const y = coordinates[1];
-      const xStart = Math.min(coordinates[0], coordinates[2]);
-      const xEnd = Math.max(coordinates[0], coordinates[2]);
-      for (let x = xStart; x <= xEnd; x++) {
-        squares.push(coordinatesToSquareName([x, y]));
-      }
-    }
-    return squares;
-  }
-
+  const _shipLength = _squares.length;
+  const _squareNames = names(_squares);
   let timesHit = 0;
 
   function hit() {
     timesHit += 1;
   }
 
-  const area = getAreaAroundShip(coordinates);
+  const perimeterWithDuplicates = _squares
+    .reduce((acc, square) => {
+      const newAcc = acc.concat(square.perimeter);
+      return newAcc;
+    }, [])
+    .filter((square) => !_squareNames.includes(square.name));
 
-  /* function getAreaAroundShip(coordinates) {
-    const area = [];
-    let highCorner = undefined;
-    let lowCorner = undefined;
-    if (coordinates[0] + coordinates[1] > coordinates[2] + coordinates[3]) {
-      highCorner = [coordinates[0] + 1, coordinates[1] + 1];
-      lowCorner = [coordinates[2] - 1, coordinates[3] - 1];
-    } else {
-      lowCorner = [coordinates[0] - 1, coordinates[1] - 1];
-      highCorner = [coordinates[2] + 1, coordinates[3] + 1];
-    }
-    for (let x = lowCorner[0]; x <= highCorner[0]; x++) {
-      area.push([x, lowCorner[1]], [x, highCorner[1]]);
-    }
-    for (let y = lowCorner[1] + 1; y < highCorner[1]; y++) {
-      area.push([lowCorner[0], y], [highCorner[0], y]);
-    }
-    const inBoardArea = area.filter((coords) => {
-      return (
-        coords[0] >= 0 && coords[1] >= 0 && coords[0] <= 9 && coords[1] <= 9
-      );
-    });
-    const inBoardAreaSquareNames = inBoardArea.map((coords) =>
-      coordinatesToSquareName(coords)
-    );
-    return inBoardAreaSquareNames;
-  } */
+  const _perimeter = removeDuplicateSquares(perimeterWithDuplicates);
 
   function isSunk() {
-    return timesHit >= shipLength;
+    return timesHit >= _shipLength;
   }
 
   return {
     isSunk,
     hit,
-    squares,
-    area,
+    get squareNames() {
+      return _squares;
+    },
+    get squareNames() {
+      return _squareNames;
+    },
+    get perimeter() {
+      return _perimeter;
+    },
   };
+}
+
+////////////////////////////
+
+export function names(arrayOfSquareObjects) {
+  return arrayOfSquareObjects.map((square) => square.name);
+}
+
+export function sortSquares(arrayOfSquareObjects) {
+  arrayOfSquareObjects.sort((a, b) => a.sum - b.sum);
+  return arrayOfSquareObjects;
+}
+
+export function removeDuplicateSquares(arrayOfSquareObjects) {
+  const sorted = sortSquares(arrayOfSquareObjects);
+  return sorted.reduce((acc, squareObject) => {
+    if (!names(acc).includes(squareObject.name)) {
+      acc.push(squareObject);
+    }
+    return acc;
+  }, []);
+}
+
+///////////////////////VALIDATIONS
+
+//TODO: write tests for validations
+//TODO: write JSDocs
+
+export function isSquareSequenceConsecutive(sortedArrayOfSquareObjects) {
+  if (sortedArrayOfSquareObjects.length === 1) {
+    return true;
+  }
+  if (sortedArrayOfSquareObjects.length === 0) {
+    return false;
+  }
+  const arrayOfSums = sortedArrayOfSquareObjects.map((square) => square.sum);
+  return Boolean(
+    arrayOfSums.reduce((previous, current) => {
+      if (previous !== false) {
+        if (current === previous + 1) {
+          return current;
+        } else {
+          return false;
+        }
+      } else return false;
+    })
+  );
+}
+
+function isShipStraight(arrayOfSquareObjects) {
+  if (
+    arrayOfSquareObjects.every(
+      (square) => square.x === arrayOfSquareObjects[0].x
+    ) ||
+    arrayOfSquareObjects.every(
+      (square) => square.y === arrayOfSquareObjects[0].y
+    )
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function isLengthOK(sortedArrayOfSquareObjects) {
+  const shipLength = sortedArrayOfSquareObjects.length;
+  if (shipLength < 1 || shipLength > 4) {
+    return false;
+  }
+  const bowSternDifference =
+    Math.abs(
+      sortedArrayOfSquareObjects.at(0).sum -
+        sortedArrayOfSquareObjects.at(-1).sum
+    ) + 1;
+  if (bowSternDifference !== shipLength) {
+    console.log("something wrong with ship length");
+    return false;
+  }
+  return true;
+}
+
+function validateInput(sortedArrayOfSquareObjects) {
+  if (!isSquareSequenceConsecutive(sortedArrayOfSquareObjects)) {
+    return false;
+  }
+  if (!isShipStraight(sortedArrayOfSquareObjects)) {
+    return false;
+  }
+  if (!isLengthOK(sortedArrayOfSquareObjects)) {
+    return false;
+  }
+  return true;
 }

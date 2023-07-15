@@ -1,4 +1,5 @@
 import { squareNameToCoordinates, getAreaAroundShip } from "./utilities.js";
+import Square from "./square.js";
 
 export function checkCompliance(arrayOfShips, squareGroups) {
   let verdict = true;
