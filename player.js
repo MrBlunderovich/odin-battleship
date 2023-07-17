@@ -1,14 +1,7 @@
-import {
-  coordinatesToSquareName,
-  defaultShips,
-  allSquares,
-  squareNameToCoordinates,
-} from "./utilities.js";
+import { allSquares } from "./square.js";
 
 export function Player(humanOrMachine, gameboard) {
-  const playerDescription = humanOrMachine;
   const board = gameboard;
-  let isActive = false;
   let isHuman = undefined;
   if (humanOrMachine === "human") {
     isHuman = true;
@@ -17,19 +10,16 @@ export function Player(humanOrMachine, gameboard) {
   }
 
   function makeMove(opponentsBoard, View) {
-    isActive = true;
     if (isHuman === true) {
       return new Promise((resolve) => {
         View.movePromiseCallback = resolve;
       });
     } else if (isHuman === false) {
-      isActive = false;
-      //return computerMove(markedSquares);
       return new Promise((resolve, reject) => {
         setTimeout(() => {
-          const move = computerMoveBetter(opponentsBoard);
-          if (move) {
-            resolve(move);
+          const moveSquareName = computerMoveBetter(opponentsBoard);
+          if (moveSquareName) {
+            resolve(moveSquareName);
           } else {
             reject("Computer failed to move");
           }
@@ -41,36 +31,37 @@ export function Player(humanOrMachine, gameboard) {
   const allPossibleSquares = allSquares();
 
   function computerMoveBetter(opponentsBoard) {
-    const markedSquares = opponentsBoard.markedSquares();
-    const goodShots = opponentsBoard.goodShots;
+    const markedSquareNames = opponentsBoard.markedSquares();
+
+    const goodShots = opponentsBoard.goodShots
+      .map((squareName) => Square(squareName))
+      .sort((a, b) => a.sum - b.sum);
+
     let potentialSquares = allPossibleSquares;
 
     if (goodShots.length === 1) {
-      potentialSquares = adjacentSquares(goodShots[0]);
+      potentialSquares = goodShots[0].adjacent;
     } else if (goodShots.length > 1) {
-      const sortedCoordinates = goodShots
-        .map((square) => squareNameToCoordinates(square))
-        .sort((a, b) => a[0] + a[1] - (b[0] + b[1]));
-      const minSquare = sortedCoordinates.slice(0, 1)[0];
-      const maxSquare = sortedCoordinates.slice(-1)[0];
-      if (minSquare[0] === maxSquare[0]) {
+      const minSquare = goodShots.at(0);
+      const maxSquare = goodShots.at(-1);
+      if (minSquare.x === maxSquare.x) {
         //ship is vertical
-        const preMin = [minSquare[0], minSquare[1] - 1];
-        const postMax = [maxSquare[0], maxSquare[1] + 1];
-        potentialSquares = endSquaresOnboard(preMin, postMax);
-      } else if (minSquare[1] === maxSquare[1]) {
+        const preMin = Square([minSquare.x, minSquare.y - 1]);
+        const postMax = Square([minSquare.x, minSquare.y + 1]);
+        potentialSquares = [preMin, postMax];
+      } else if (minSquare.y === maxSquare.y) {
         //ship is horizontal
-        const preMin = [minSquare[0] - 1, minSquare[1]];
-        const postMax = [maxSquare[0] + 1, maxSquare[1]];
-        potentialSquares = endSquaresOnboard(preMin, postMax);
+        const preMin = Square([minSquare.x - 1, minSquare.y]);
+        const postMax = Square([minSquare.x + 1, minSquare.y]);
+        potentialSquares = [preMin, postMax];
       } else {
         console.warn("unexpected result");
       }
     }
 
-    const candidateSquares = potentialSquares.filter((square) => {
-      return !markedSquares.includes(square);
-    });
+    const candidateSquares = potentialSquares.filter(
+      (square) => !!square && !markedSquareNames.includes(square.name)
+    );
 
     if (candidateSquares.length === 0) {
       console.error("Unable to make a move");
@@ -80,53 +71,31 @@ export function Player(humanOrMachine, gameboard) {
     return candidateSquares[target];
   }
 
-  function endSquaresOnboard(preMin, postMax) {
-    return [preMin, postMax]
-      .filter((coordinates) => {
-        const [x, y] = coordinates;
-        return !(x < 0 || y < 0 || x > 9 || y > 9);
-      })
-      .map((square) => coordinatesToSquareName(square));
-  }
-
-  function adjacentSquares(square) {
-    const [x, y] = squareNameToCoordinates(square);
-    const adjacent = [
-      [x, y + 1],
-      [x, y - 1],
-      [x + 1, y],
-      [x - 1, y],
-    ];
-    const adjacentOnBoard = adjacent.filter((coordinates) => {
-      const [x, y] = coordinates;
-      return !(x < 0 || y < 0 || x > 9 || y > 9);
-    });
-    const result = adjacentOnBoard.map((square) =>
-      coordinatesToSquareName(square)
-    );
-    return result;
-  }
-
-  /* function computerMove(markedSquares) {
-    let target = newTarget();
-    while (markedSquares.includes(target)) {
-      target = newTarget();
-    }
-    return target;
-
-    function newTarget() {
-      return coordinatesToSquareName([randomNumber(), randomNumber()]);
-    }
-    function randomNumber() {
-      return Math.floor(Math.random() * 10);
-    }
-  } */
+  const defaultShipCoordinates = [
+    ["c1"],
+    ["a1"],
+    ["a3"],
+    ["a5"],
+    ["a7", "a8"],
+    ["a10", "b10"],
+    ["d10", "e10"],
+    ["d10", "e10", "f10"],
+    ["h10", "i10", "j10"],
+    ["j8", "j7", "j6", "j5"],
+  ];
 
   function populateBoard(placement = null) {
     if (placement === "default") {
-      board.addShips(defaultShips);
+      board.setShips(defaultShipCoordinates);
     }
+    //TODO: add localStorage
   }
 
-  return { makeMove, board, isHuman, populateBoard, playerDescription };
+  return {
+    makeMove,
+    board,
+    isHuman,
+    populateBoard,
+    playerDescription: humanOrMachine,
+  };
 }

@@ -45,7 +45,7 @@ function newGame(auto = false) {
 } */
 
 async function loop() {
-  context.playersMove = AIautoplay ? false : true;
+  context.playersMove = context.AIautoplay ? false : true;
   while (!context.winner) {
     const currentPlayer = context.playersMove ? players[0] : players[1];
     const nextPlayer = context.playersMove ? players[1] : players[0];

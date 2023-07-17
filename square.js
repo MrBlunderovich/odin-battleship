@@ -12,11 +12,16 @@ export default function Square(coordinates) {
     name = coordinates;
     [_x, _y] = squareNameToCoordinates(name);
   } else if (Array.isArray(coordinates) && coordinates.length === 2) {
+    if (!checkIfOnBoard(coordinates)) {
+      return null;
+    }
     _x = coordinates[0];
     _y = coordinates[1];
     name = coordinatesToSquareName(coordinates);
   } else {
-    throw new Error("Wrong input");
+    console.warn("Square received unexpected input");
+    return null;
+    //throw new Error("Wrong input");
   }
 
   function _adjacent(_x, _y) {
@@ -75,6 +80,7 @@ export default function Square(coordinates) {
     get sum() {
       return _sumOfCoordinates(_x, _y);
     },
+    allSquares,
   };
 }
 
@@ -123,4 +129,18 @@ export function coordinatesToSquareName([x, y]) {
     throw new Error("invalid input");
   }
   return String.fromCharCode(x + 97) + (y + 1);
+}
+
+/**
+ * Returns an array of all squares on a 10x10 board.
+ * @returns {[]}
+ */
+export function allSquares() {
+  const squares = [];
+  for (let x = 0; x <= 9; x++) {
+    for (let y = 0; y <= 9; y++) {
+      squares.push(Square([x, y]));
+    }
+  }
+  return squares;
 }

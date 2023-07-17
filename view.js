@@ -1,17 +1,4 @@
-//import { coordinatesToSquareName } from "./utilities.js";
-//import { composeShipCoordinates } from "./ship-placement.js";
-//import { composeShips } from "./gameboard.js";
-
-/* const context = {
-  boards: [],
-  players: [],
-  winner: null,
-  humansMove: null,
-  AIautoplay: false,
-  newGameCallBack: newGame,
-  moveCallBack: null,
-  status: "Ready to start",
-}; */
+import Square from "./square.js";
 
 export const View = (function () {
   let _context = {};
@@ -119,7 +106,7 @@ export const View = (function () {
     newSquare.classList.add("square");
     newSquare.dataset.owner = owner;
     newSquare.dataset.coordinates = JSON.stringify(coordinates);
-    newSquare.dataset.name = coordinatesToSquareName(coordinates);
+    newSquare.dataset.name = Square(coordinates).name;
     return newSquare;
   }
 

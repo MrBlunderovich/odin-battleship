@@ -31,23 +31,24 @@ export function Gameboard() {
     }, true);
   }
 
-  function addShips(coordinates) {
-    coordinates.forEach((item) => ships.push(Ship(item)));
+  function setShips(arrayOfSquareNames) {
+    ships.length = 0;
+    arrayOfSquareNames.forEach((squareName) => ships.push(Ship(squareName)));
   }
 
   function markedSquares() {
-    const sunkShipSquaresAndAreas = ships.reduce((acc, ship) => {
+    const sunkShipSquaresAndPerimeter = ships.reduce((acc, ship) => {
       if (ship.isSunk()) {
-        return [...acc, ...ship.area];
+        return [...acc, ...ship.perimeter];
       }
       return acc;
     }, []);
-    return [...hits, ...sunkShipSquaresAndAreas];
+    return [...hits, ...sunkShipSquaresAndPerimeter];
   }
 
-  function shipSquares() {
+  function shipSquareNames() {
     return ships.reduce((acc, ship) => {
-      return acc.concat(ship.squares);
+      return acc.concat(ship.squareNames);
     }, []);
   }
 
@@ -85,17 +86,18 @@ export function Gameboard() {
     }
 
     return ships.length === 10 ? ships : null;
+    //setShips(ships.map(s=>s.squareNames))
   }
 
   return {
     ships,
+    setShips,
     hits,
-    goodShots,
     receiveAttack,
+    goodShots,
     areAllSunk,
-    addShips,
     markedSquares,
-    shipSquares,
+    shipSquares: shipSquareNames,
     composeShips,
   };
 }
