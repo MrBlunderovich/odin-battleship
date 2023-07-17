@@ -1,26 +1,35 @@
-import { coordinatesToSquareName } from "./utilities.js";
-import { composeShipCoordinates } from "./ship_placement.js";
+//import { coordinatesToSquareName } from "./utilities.js";
+//import { composeShipCoordinates } from "./ship-placement.js";
+//import { composeShips } from "./gameboard.js";
+
+/* const context = {
+  boards: [],
+  players: [],
+  winner: null,
+  humansMove: null,
+  AIautoplay: false,
+  newGameCallBack: newGame,
+  moveCallBack: null,
+  status: "Ready to start",
+}; */
 
 export const View = (function () {
-  let newGameCallback = () => console.error("no callback yet");
-  let positionShipsCB = () => console.error("no callback yet");
-  let callback = null;
-  let status = "Ready to start";
+  let _context = {};
+  //let newGameCallback = () => console.error("no callback yet");
+  //let positionShipsCB = () => console.error("no callback yet");
+  let moveCallback = null;
   const playerBoard = document.querySelector(".board.player");
   const opponentBoard = document.querySelector(".board.opponent");
   const display = document.querySelector(".status");
+
+  //////////////////////////////////////////////////////EVENTS:
+
   document.addEventListener("click", handleClick);
 
   function handleClick(event) {
     if (event.target.matches(".player .square")) {
-      const square = event.target;
-      square.classList.toggle("ship");
-      const shipSquares = square.parentElement.querySelectorAll(".ship");
-      const shipSquareNames = Array.from(shipSquares).map(
-        (square) => square.dataset.name
-      );
-      const newShipCoordinates = composeShipCoordinates(shipSquareNames);
-      console.log(newShipCoordinates);
+      //if(_context.status === 'Ready to start'){}
+      handleShipInput(event);
     }
 
     if (event.target.matches(".opponent .square")) {
@@ -29,9 +38,9 @@ export const View = (function () {
       }
       const move = event.target.dataset.name;
       console.log(move);
-      if (callback) {
-        callback(move);
-        callback = null;
+      if (moveCallback) {
+        moveCallback(move);
+        moveCallback = null;
       }
     }
 
@@ -45,12 +54,24 @@ export const View = (function () {
     }
   }
 
+  function handleShipInput(event) {
+    const square = event.target;
+    square.classList.toggle("ship");
+    const shipSquares = square.parentElement.querySelectorAll(".ship");
+    const shipSquareNames = Array.from(shipSquares).map(
+      (square) => square.dataset.name
+    );
+    const attempt = _context.boards[0].composeShips(shipSquareNames);
+    /* if (attempt) {
+      render(_context.boards);
+    } */
+  }
+
+  //////////////////////////////////////////////////////RENDER:
+
   function render([playerGameboard, opponentGameboard]) {
-    /* const playerSquares = document.querySelectorAll('.player .square')
-    const opponentSquares = document.querySelectorAll('.opponent .square') */
     const squares = document.querySelectorAll(".square");
     squares.forEach((square) => {
-      //square.className = "";
       if (square.closest(".player")) {
         setSquareClasses(square, playerGameboard, true);
       } else if (square.closest(".opponent")) {
@@ -58,9 +79,8 @@ export const View = (function () {
       } else {
         console.error("Square unidentified");
       }
-      //square.classList.add("square");
     });
-    display.textContent = status;
+    display.textContent = _context.status;
   }
 
   function setSquareClasses(square, gameboard, isPlayer = false) {
@@ -103,9 +123,7 @@ export const View = (function () {
     return newSquare;
   }
 
-  function setStatus(newStatus) {
-    status = newStatus;
-  }
+  //////////////////////////////////////////
 
   /* function clearBoards() {
     [playerBoard, opponentBoard].forEach((board) => {
@@ -116,15 +134,11 @@ export const View = (function () {
   return {
     createBoards,
     render,
-    set movePromiseCallback(cb) {
-      callback = cb;
+    /* set movePromiseCallback(cb) {
+      moveCallback = cb;
+    }, */
+    set context(newContext) {
+      _context = newContext;
     },
-    set newGameCB(cb) {
-      newGameCallback = cb;
-    },
-    set positionShipsCB(cb) {
-      newGameCallback = cb;
-    },
-    setStatus,
   };
 })();

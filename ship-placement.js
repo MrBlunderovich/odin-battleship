@@ -9,20 +9,7 @@ export function checkCompliance(arrayOfShips, squareGroups) {
   } else if (arrayOfShips.some((shipArray) => shipArray.length !== 2)) {
     verdict = false;
     console.warn("should be two coordinates");
-  } /* else if (
-    arrayOfShips.some((shipArray) => {
-      const coordinates = shipArray.map((squareName) =>
-        squareNameToCoordinates(squareName)
-      );
-      return (
-        coordinates[0][0] !== coordinates[1][0] &&
-        coordinates[0][1] !== coordinates[1][1]
-      );
-    })
-  ) {
-    verdict = false;
-    console.warn("ships should be straight");
-  } */ else if (
+  } else if (
     squareGroups.some((group) => {
       const coordinates = group.map((squareName) =>
         squareNameToCoordinates(squareName)

@@ -1,4 +1,5 @@
 import { Ship } from "./ship.js";
+import Square from "./square.js";
 
 export function Gameboard() {
   const ships = [];
@@ -8,7 +9,7 @@ export function Gameboard() {
   function receiveAttack(squareName) {
     hits.push(squareName);
     for (let ship of ships) {
-      if (ship.squares.includes(squareName)) {
+      if (ship.squareNames.includes(squareName)) {
         ship.hit();
         if (ship.isSunk()) {
           goodShots.length = 0;
@@ -44,16 +45,46 @@ export function Gameboard() {
     return [...hits, ...sunkShipSquaresAndAreas];
   }
 
-  function unavailableSquares() {
-    return ships.reduce((acc, ship) => {
-      return [...acc, ...ship.squares, ...ship.area];
-    }, []);
-  }
-
   function shipSquares() {
     return ships.reduce((acc, ship) => {
       return acc.concat(ship.squares);
     }, []);
+  }
+
+  //////////////////////////////////////////////COMPOSE
+
+  function composeShips(arrayOfShipSquareNames) {
+    if (arrayOfShipSquareNames.length !== 20) {
+      return null;
+    }
+
+    let inputSquares = arrayOfShipSquareNames.map((squareName) =>
+      Square(squareName)
+    );
+    const ships = [];
+
+    while (inputSquares.length > 0) {
+      const currentSquare = inputSquares.pop();
+      const candidateSquares = currentSquare.perimeter;
+      const groupOfSquares = candidateSquares.filter((square) =>
+        inputSquares.map((s) => s.name).includes(square.name)
+      );
+
+      if (groupOfSquares.length > 0) {
+        inputSquares = inputSquares.filter(
+          (square) => !groupOfSquares.map((s) => s.name).includes(square.name)
+        );
+
+        const newShip = Ship(groupOfSquares);
+        if (newShip) {
+          ships.push(newShip);
+        } else {
+          return null;
+        }
+      }
+    }
+
+    return ships.length === 10 ? ships : null;
   }
 
   return {
@@ -65,5 +96,6 @@ export function Gameboard() {
     addShips,
     markedSquares,
     shipSquares,
+    composeShips,
   };
 }

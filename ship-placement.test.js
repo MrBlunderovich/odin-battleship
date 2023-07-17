@@ -2,7 +2,7 @@ const { defaultShips, sortShips } = require("./utilities.js");
 const {
   checkCompliance,
   composeShipCoordinates,
-} = require("./ship_placement.js");
+} = require("./ship-placement.js");
 
 test("Empty", () => {
   expect(composeShipCoordinates([])).toBe(null);
