@@ -5,6 +5,7 @@ export function Gameboard() {
   const ships = [];
   const hits = [];
   const goodShots = [];
+  //const sunkShipsSquareNames = [];
 
   function receiveAttack(squareName) {
     hits.push(squareName);
@@ -13,6 +14,7 @@ export function Gameboard() {
         ship.hit();
         if (ship.isSunk()) {
           goodShots.length = 0;
+          //sunkShipsSquareNames.push(...ship.squareNames);
         } else {
           goodShots.push(squareName);
         }
@@ -22,9 +24,18 @@ export function Gameboard() {
     return false;
   }
 
+  /* function areAllSunk() {
+    if (ships.length === 0) {
+      console.warn("ships.length equals zero");
+      return null;
+    }
+    return sunkShipsSquareNames.length === 20;
+  } */
+
   function areAllSunk() {
     if (ships.length === 0) {
-      return undefined;
+      console.warn("ships.length equals zero");
+      return null;
     }
     return ships.reduce((verdict, currentShip) => {
       return verdict && currentShip.isSunk();
@@ -36,17 +47,19 @@ export function Gameboard() {
     arrayOfSquareNames.forEach((squareName) => ships.push(Ship(squareName)));
   }
 
-  function markedSquares() {
-    const sunkShipSquaresAndPerimeter = ships.reduce((acc, ship) => {
-      if (ship.isSunk()) {
-        return [...acc, ...ship.perimeter];
-      }
-      return acc;
-    }, []);
-    return [...hits, ...sunkShipSquaresAndPerimeter];
+  function _markedSquareNames() {
+    const sunkShipsPerimeter = ships
+      .reduce((acc, ship) => {
+        if (ship.isSunk()) {
+          return acc.concat(ship.perimeter);
+        }
+        return acc;
+      }, [])
+      .map((square) => square.name);
+    return [...hits, ...sunkShipsPerimeter];
   }
 
-  function shipSquareNames() {
+  function _shipSquareNames() {
     return ships.reduce((acc, ship) => {
       return acc.concat(ship.squareNames);
     }, []);
@@ -90,14 +103,19 @@ export function Gameboard() {
   }
 
   return {
+    //sunkShipsSquareNames,
     ships,
     setShips,
     hits,
     receiveAttack,
     goodShots,
     areAllSunk,
-    markedSquares,
-    shipSquares: shipSquareNames,
+    get markedSquareNames() {
+      return _markedSquareNames();
+    },
+    get shipSquareNames() {
+      return _shipSquareNames();
+    },
     composeShips,
   };
 }

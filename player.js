@@ -1,4 +1,4 @@
-import { allSquares } from "./square.js";
+import Square, { allSquares } from "./square.js";
 
 export function Player(humanOrMachine, gameboard) {
   const board = gameboard;
@@ -9,7 +9,7 @@ export function Player(humanOrMachine, gameboard) {
     isHuman = false;
   }
 
-  function makeMove(opponentsBoard, View) {
+  function makeMove(opponentsBoard, View, AIDelay = 500) {
     if (isHuman === true) {
       return new Promise((resolve) => {
         View.movePromiseCallback = resolve;
@@ -23,7 +23,7 @@ export function Player(humanOrMachine, gameboard) {
           } else {
             reject("Computer failed to move");
           }
-        }, 300);
+        }, AIDelay);
       });
     }
   }
@@ -31,8 +31,6 @@ export function Player(humanOrMachine, gameboard) {
   const allPossibleSquares = allSquares();
 
   function computerMoveBetter(opponentsBoard) {
-    const markedSquareNames = opponentsBoard.markedSquares();
-
     const goodShots = opponentsBoard.goodShots
       .map((squareName) => Square(squareName))
       .sort((a, b) => a.sum - b.sum);
@@ -47,12 +45,12 @@ export function Player(humanOrMachine, gameboard) {
       if (minSquare.x === maxSquare.x) {
         //ship is vertical
         const preMin = Square([minSquare.x, minSquare.y - 1]);
-        const postMax = Square([minSquare.x, minSquare.y + 1]);
+        const postMax = Square([maxSquare.x, maxSquare.y + 1]);
         potentialSquares = [preMin, postMax];
       } else if (minSquare.y === maxSquare.y) {
         //ship is horizontal
         const preMin = Square([minSquare.x - 1, minSquare.y]);
-        const postMax = Square([minSquare.x + 1, minSquare.y]);
+        const postMax = Square([maxSquare.x + 1, maxSquare.y]);
         potentialSquares = [preMin, postMax];
       } else {
         console.warn("unexpected result");
@@ -60,7 +58,8 @@ export function Player(humanOrMachine, gameboard) {
     }
 
     const candidateSquares = potentialSquares.filter(
-      (square) => !!square && !markedSquareNames.includes(square.name)
+      (square) =>
+        square && !opponentsBoard.markedSquareNames.includes(square.name)
     );
 
     if (candidateSquares.length === 0) {
@@ -68,7 +67,7 @@ export function Player(humanOrMachine, gameboard) {
       return null;
     }
     const target = Math.floor(Math.random() * candidateSquares.length);
-    return candidateSquares[target];
+    return candidateSquares[target].name;
   }
 
   const defaultShipCoordinates = [
@@ -78,7 +77,7 @@ export function Player(humanOrMachine, gameboard) {
     ["a5"],
     ["a7", "a8"],
     ["a10", "b10"],
-    ["d10", "e10"],
+    ["j3", "j2"],
     ["d10", "e10", "f10"],
     ["h10", "i10", "j10"],
     ["j8", "j7", "j6", "j5"],

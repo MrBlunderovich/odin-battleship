@@ -24,7 +24,7 @@ export const View = (function () {
         return;
       }
       const move = event.target.dataset.name;
-      console.log(move);
+      console.log("click: ", move);
       if (moveCallback) {
         moveCallback(move);
         moveCallback = null;
@@ -34,9 +34,9 @@ export const View = (function () {
     if (event.target.matches(".new-game")) {
       if (event.ctrlKey) {
         const AUTO = true;
-        newGameCallback(AUTO);
+        _context.newGameCallback(AUTO);
       } else {
-        newGameCallback();
+        _context.newGameCallback();
       }
     }
   }
@@ -72,15 +72,15 @@ export const View = (function () {
 
   function setSquareClasses(square, gameboard, isPlayer = false) {
     const squareName = square.dataset.name;
-    if (gameboard.markedSquares().includes(squareName)) {
+    if (gameboard.markedSquareNames.includes(squareName)) {
       square.classList.add("marked");
     }
-    if (isPlayer && gameboard.shipSquares().includes(squareName)) {
+    if (isPlayer && gameboard.shipSquareNames.includes(squareName)) {
       square.classList.add("ship");
     }
     if (
-      gameboard.shipSquares().includes(squareName) &&
-      gameboard.markedSquares().includes(squareName)
+      gameboard.shipSquareNames.includes(squareName) &&
+      gameboard.markedSquareNames.includes(squareName)
     ) {
       square.classList.add("hit");
     }
@@ -121,9 +121,9 @@ export const View = (function () {
   return {
     createBoards,
     render,
-    /* set movePromiseCallback(cb) {
+    set movePromiseCallback(cb) {
       moveCallback = cb;
-    }, */
+    },
     set context(newContext) {
       _context = newContext;
     },

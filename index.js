@@ -8,8 +8,7 @@ const context = {
   winner: null,
   humansMove: null,
   AIautoplay: false,
-  newGameCallBack: newGame,
-  moveCallBack: null,
+  newGameCallback: newGame,
   status: "Ready to start",
 };
 
@@ -45,13 +44,14 @@ function newGame(auto = false) {
 } */
 
 async function loop() {
-  context.playersMove = context.AIautoplay ? false : true;
-  while (!context.winner) {
-    const currentPlayer = context.playersMove ? players[0] : players[1];
-    const nextPlayer = context.playersMove ? players[1] : players[0];
+  const AIDelay = context.AIautoplay ? 50 : 500;
+  let isHumansMove = context.AIautoplay ? false : true;
+  while (context.winner === null) {
+    const currentPlayer = isHumansMove ? players[0] : players[1];
+    const nextPlayer = isHumansMove ? players[1] : players[0];
     let move = undefined;
     try {
-      move = await currentPlayer.makeMove(nextPlayer.board, View);
+      move = await currentPlayer.makeMove(nextPlayer.board, View, AIDelay);
     } catch (error) {
       console.warn("move failure");
       console.error(error);
@@ -59,19 +59,18 @@ async function loop() {
     }
     console.log("Move: ", move);
     const shotIsSuccessful = nextPlayer.board.receiveAttack(move);
-
     if (nextPlayer.board.areAllSunk()) {
       context.winner = currentPlayer;
     }
     if (!shotIsSuccessful) {
-      playersMove = AIautoplay ? playersMove : !playersMove;
+      isHumansMove = context.AIautoplay ? isHumansMove : !isHumansMove;
     }
 
     context.status = nextPlayer.isHuman ? "Your move" : "Computer's move";
     View.render(boards);
   }
-  console.log(winner.playerDescription + " wins");
-  context.status = winner.playerDescription + " wins";
+  console.log(context.winner.playerDescription + " wins");
+  context.status = context.winner.playerDescription + " wins";
   View.render(boards);
 }
 
