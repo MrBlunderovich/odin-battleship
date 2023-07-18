@@ -1,4 +1,4 @@
-import { Ship } from "./ship.js";
+import { Ship, removeDuplicateSquares } from "./ship.js";
 import Square from "./square.js";
 
 export function Gameboard() {
@@ -71,31 +71,47 @@ export function Gameboard() {
     if (arrayOfShipSquareNames.length !== 20) {
       return null;
     }
-
+    console.log("composeShips input: ", arrayOfShipSquareNames);
     let inputSquares = arrayOfShipSquareNames.map((squareName) =>
       Square(squareName)
     );
+
     const ships = [];
+    const group = [];
 
     while (inputSquares.length > 0) {
-      const currentSquare = inputSquares.pop();
-      const candidateSquares = currentSquare.perimeter;
-      const groupOfSquares = candidateSquares.filter((square) =>
-        inputSquares.map((s) => s.name).includes(square.name)
-      );
-
-      if (groupOfSquares.length > 0) {
-        inputSquares = inputSquares.filter(
-          (square) => !groupOfSquares.map((s) => s.name).includes(square.name)
-        );
-
-        const newShip = Ship(groupOfSquares);
-        if (newShip) {
-          ships.push(newShip);
-        } else {
-          return null;
+      group.push(inputSquares.pop());
+      do {
+        const adjacent = [];
+        for (let square of group) {
+          adjacent.push(...findIntersection(square.perimeter, inputSquares));
         }
+        if (adjacent.length > 0) {
+          group.push(...adjacent);
+        } else {
+          ships.push([...group]);
+          group.length = 0;
+        }
+      } while (group.length > 0);
+    }
+
+    function findIntersection(perimeterSquares, inputSquares) {
+      const inputNames = inputSquares.map((s) => s.name);
+      const result = perimeterSquares.filter((square) =>
+        inputNames.includes(square.name)
+      );
+      if (result.length > 0) {
+        const resultNames = result.map((s) => s.name);
+        console.log(inputSquares);
+        const newInputSquares = inputSquares.filter(
+          (square) => !resultNames.includes(square.name)
+        );
+        inputSquares.length = 0;
+        inputSquares.push(...newInputSquares);
+        console.log(inputSquares);
+        return result;
       }
+      return [];
     }
 
     return ships.length === 10 ? ships : null;

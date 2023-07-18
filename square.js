@@ -19,7 +19,7 @@ export default function Square(coordinates) {
     _y = coordinates[1];
     name = coordinatesToSquareName(coordinates);
   } else {
-    console.warn("Square received unexpected input");
+    console.warn("Square received unexpected input: ", coordinates);
     return null;
     //throw new Error("Wrong input");
   }

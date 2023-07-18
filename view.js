@@ -49,6 +49,7 @@ export const View = (function () {
       (square) => square.dataset.name
     );
     const attempt = _context.boards[0].composeShips(shipSquareNames);
+    console.log(attempt);
     /* if (attempt) {
       render(_context.boards);
     } */
