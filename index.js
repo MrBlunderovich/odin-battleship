@@ -9,7 +9,9 @@ const context = {
   humansMove: null,
   AIautoplay: false,
   newGameCallback: newGame,
-  status: "Ready to start",
+  stopGameCallback: stopGame,
+  status: "Ready", //Positioning||Ready||Over
+  display: "",
 };
 
 const boards = context.boards;
@@ -18,7 +20,17 @@ const players = context.players;
 let playersMove = null;
 let AIautoplay = false; */
 
-function newGame(auto = false) {
+function stopGame() {
+  console.log("newGame called");
+  context.status = "Positioning";
+  context.display = "Position your ships";
+  View.wipeBoardMarks();
+}
+
+function newGame(shipCoordinates = undefined, auto = false) {
+  console.log("newGame called");
+  context.status = "Ready";
+  context.display = "New Game";
   context.winner = "0";
   if (auto) {
     context.AIautoplay = true;
@@ -27,14 +39,14 @@ function newGame(auto = false) {
   }
   boards.length = 0;
   players.length = 0;
+  context.winner = null;
   boards.push(Gameboard(), Gameboard());
   players.push(Player("human", boards[0]), Player("machine", boards[1]));
-  context.winner = null;
-  players.forEach((player) => player.populateBoard("default"));
+  players.forEach((player) => player.populateBoard(shipCoordinates));
   View.createBoards();
+  View.context = context;
   View.render(boards);
   //View.newGameCB = newGame;
-  View.context = context;
   //View.newGameCB = positionShips;
   loop();
 }
@@ -61,16 +73,17 @@ async function loop() {
     const shotIsSuccessful = nextPlayer.board.receiveAttack(move);
     if (nextPlayer.board.areAllSunk()) {
       context.winner = currentPlayer;
+      context.status = "Over";
     }
     if (!shotIsSuccessful) {
       isHumansMove = context.AIautoplay ? isHumansMove : !isHumansMove;
     }
 
-    context.status = nextPlayer.isHuman ? "Your move" : "Computer's move";
+    context.display = isHumansMove ? "Your move" : "Computer's move";
     View.render(boards);
   }
   console.log(context.winner.playerDescription + " wins");
-  context.status = context.winner.playerDescription + " wins";
+  context.display = context.winner.playerDescription + " wins";
   View.render(boards);
 }
 

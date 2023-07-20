@@ -25,6 +25,7 @@ export default function Square(coordinates) {
   }
 
   function _adjacent(_x, _y) {
+    console.log({ _x, _y });
     const adjacentCoordinates = [
       [_x + 1, _y],
       [_x - 1, _y],

@@ -83,11 +83,23 @@ export function Player(humanOrMachine, gameboard) {
     ["j8", "j7", "j6", "j5"],
   ];
 
-  function populateBoard(placement = null) {
-    if (placement === "default") {
+  function populateBoard(shipCoordinates = undefined) {
+    if (shipCoordinates) {
+      localStorage.setItem("ships", JSON.stringify(shipCoordinates));
+    }
+
+    if (isHuman) {
+      const savedShips = localStorage.getItem("ships");
+      if (savedShips) {
+        board.setShips(JSON.parse(savedShips));
+      } else {
+        board.setShips(defaultShipCoordinates);
+        localStorage.setItem("ships", JSON.stringify(defaultShipCoordinates));
+      }
+    } else {
+      //TODO: implement auto ship placement
       board.setShips(defaultShipCoordinates);
     }
-    //TODO: add localStorage
   }
 
   return {

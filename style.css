@@ -38,11 +38,14 @@ button {
   border: var(--border);
   border-radius: 5px;
   outline: none;
+  &:active {
+    transform: scale(0.98);
+  }
 }
-
+/* 
 button:active {
   transform: scale(0.98);
-}
+} */
 
 .main {
   display: flex;
@@ -106,23 +109,38 @@ button:active {
   background-color: #b4ebff;
 }
 
-.marked {
-  background-color: #fff7cb;
+.player.positioning .ship {
+  background-color: #ffa5a5;
 }
 
-.marked::after {
+.marked {
+  background-color: #fff7cb;
+  &::after {
+    content: "*";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* .marked::after {
   content: "*";
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
-}
+} */
 
 .hit {
   background-color: #ffa5a5;
+  &::after {
+    content: "X";
+  }
 }
 
-.hit::after {
+/* .hit::after {
   content: "X";
-}
+} */

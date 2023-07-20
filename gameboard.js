@@ -42,9 +42,23 @@ export function Gameboard() {
     }, true);
   }
 
-  function setShips(arrayOfSquareNames) {
-    ships.length = 0;
-    arrayOfSquareNames.forEach((squareName) => ships.push(Ship(squareName)));
+  function setShips(arrayOfArraysOfSquareNames) {
+    const newFleet = [];
+    for (let arrayOfSquareNames of arrayOfArraysOfSquareNames) {
+      const newShip = Ship(arrayOfSquareNames);
+      //console.log(newShip ? newShip.squareNames : newShip);
+      if (newShip) {
+        newFleet.push(newShip);
+      }
+    }
+    if (newFleet.length === 10) {
+      ships.length = 0;
+      ships.push(...newFleet);
+      console.log(ships.map((s) => s.squareNames));
+      return ships;
+    }
+    console.warn("bad Ships");
+    return null;
   }
 
   function _markedSquareNames() {
@@ -71,7 +85,6 @@ export function Gameboard() {
     if (arrayOfShipSquareNames.length !== 20) {
       return null;
     }
-    console.log("composeShips input: ", arrayOfShipSquareNames);
     let inputSquares = arrayOfShipSquareNames.map((squareName) =>
       Square(squareName)
     );
@@ -102,20 +115,23 @@ export function Gameboard() {
       );
       if (result.length > 0) {
         const resultNames = result.map((s) => s.name);
-        console.log(inputSquares);
         const newInputSquares = inputSquares.filter(
           (square) => !resultNames.includes(square.name)
         );
         inputSquares.length = 0;
         inputSquares.push(...newInputSquares);
-        console.log(inputSquares);
         return result;
       }
       return [];
     }
 
-    return ships.length === 10 ? ships : null;
-    //setShips(ships.map(s=>s.squareNames))
+    if (ships.length === 10) {
+      const shipCoordinates = ships.map((group) => {
+        return group.map((s) => s.name);
+      });
+      return shipCoordinates;
+    }
+    return null;
   }
 
   return {

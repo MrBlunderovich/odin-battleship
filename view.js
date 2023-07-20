@@ -20,7 +20,7 @@ export const View = (function () {
     }
 
     if (event.target.matches(".opponent .square")) {
-      if (event.target.matches(".marked")) {
+      if (event.target.matches(".marked") || _context.status !== "Ready") {
         return;
       }
       const move = event.target.dataset.name;
@@ -34,7 +34,7 @@ export const View = (function () {
     if (event.target.matches(".new-game")) {
       if (event.ctrlKey) {
         const AUTO = true;
-        _context.newGameCallback(AUTO);
+        _context.newGameCallback(undefined, AUTO);
       } else {
         _context.newGameCallback();
       }
@@ -42,14 +42,22 @@ export const View = (function () {
   }
 
   function handleShipInput(event) {
+    if (_context.status !== "Positioning") {
+      _context.stopGameCallback();
+      //stop current game
+    }
+    document.querySelector(".player").classList.add("positioning");
     const square = event.target;
     square.classList.toggle("ship");
     const shipSquares = square.parentElement.querySelectorAll(".ship");
     const shipSquareNames = Array.from(shipSquares).map(
       (square) => square.dataset.name
     );
-    const attempt = _context.boards[0].composeShips(shipSquareNames);
-    console.log(attempt);
+    const newShipCoordinates = _context.boards[0].composeShips(shipSquareNames);
+    if (newShipCoordinates && _context.boards[0].setShips(newShipCoordinates)) {
+      _context.newGameCallback(newShipCoordinates);
+      document.querySelector(".player").classList.remove("positioning");
+    }
     /* if (attempt) {
       render(_context.boards);
     } */
@@ -68,7 +76,7 @@ export const View = (function () {
         console.error("Square unidentified");
       }
     });
-    display.textContent = _context.status;
+    display.textContent = _context.display;
   }
 
   function setSquareClasses(square, gameboard, isPlayer = false) {
@@ -85,6 +93,15 @@ export const View = (function () {
     ) {
       square.classList.add("hit");
     }
+  }
+
+  function wipeBoardMarks() {
+    console.log("wiping board marks");
+    const squares = document.querySelectorAll(".square");
+    squares.forEach((square) => {
+      square.classList.remove("hit", "marked");
+    });
+    document.querySelector(".status").textContent = _context.display;
   }
 
   function createBoards() {
@@ -121,6 +138,7 @@ export const View = (function () {
 
   return {
     createBoards,
+    wipeBoardMarks,
     render,
     set movePromiseCallback(cb) {
       moveCallback = cb;
