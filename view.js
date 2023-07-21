@@ -84,6 +84,9 @@ export const View = (function () {
     if (gameboard.markedSquareNames.includes(squareName)) {
       square.classList.add("marked");
     }
+    /* if (gameboard.shipSquareNames.includes(squareName)) {
+      square.classList.add("ship");
+    } */
     if (isPlayer && gameboard.shipSquareNames.includes(squareName)) {
       square.classList.add("ship");
     }

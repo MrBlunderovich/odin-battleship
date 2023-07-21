@@ -54,11 +54,12 @@ export function Gameboard() {
     if (newFleet.length === 10) {
       ships.length = 0;
       ships.push(...newFleet);
-      console.log(ships.map((s) => s.squareNames));
+      //console.log(ships.map((s) => s.squareNames));
       return ships;
     }
-    console.warn("bad Ships");
-    return null;
+    //console.warn("bad Ships");
+    throw new Error("bad Ships");
+    //return null;
   }
 
   function _markedSquareNames() {

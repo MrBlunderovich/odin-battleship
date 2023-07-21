@@ -24,8 +24,12 @@ export default function Square(coordinates) {
     //throw new Error("Wrong input");
   }
 
+  /* function randomCoordinates(){
+    function random(){return Math.floor(Math.random()*10)}
+    return [random(),random()]
+  } */
+
   function _adjacent(_x, _y) {
-    console.log({ _x, _y });
     const adjacentCoordinates = [
       [_x + 1, _y],
       [_x - 1, _y],
@@ -133,7 +137,7 @@ export function coordinatesToSquareName([x, y]) {
 }
 
 /**
- * Returns an array of all squares on a 10x10 board.
+ * Returns an array of all squares (square objects) on a 10x10 board.
  * @returns {[]}
  */
 export function allSquares() {
