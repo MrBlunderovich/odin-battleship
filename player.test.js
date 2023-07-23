@@ -1,5 +1,5 @@
 const { Player, frontAndBack } = require("./player.js");
-const { allSquares } = require("./utilities.js");
+const { allSquares } = require("./square.js");
 const { Gameboard } = require("./gameboard.js");
 const Square = require("./square.js").default;
 
@@ -12,23 +12,9 @@ afterEach(() => {
   spy.mockRestore();
 });
 
-xtest("AI makes move", async () => {
-  const allSquaresButD6 = allSquares().filter((item) => item !== "d6");
-  const player = Player("machine");
-  //expect(player.makeMove()).toBeTruthy();
-  function markedSquares() {
-    return allSquaresButD6;
-  }
-  const opponentsBoard = {
-    markedSquares,
-    goodShots: [],
-  };
-  expect(await player.makeMove(opponentsBoard)).toBe("d6");
-});
-
-xtest("Player can populate his gameboard with ships", () => {
-  const player = Player("human", Gameboard());
-  player.populateBoard("default");
+test("Player can populate his gameboard with ships", () => {
+  const player = Player("machine", Gameboard());
+  player.populateBoard();
   expect(player.board.ships.length).toBe(10);
 });
 

@@ -68,9 +68,6 @@ export function removeDuplicateSquares(arrayOfSquareObjects) {
 
 ///////////////////////VALIDATIONS
 
-//TODO: write tests for validations
-//TODO: write JSDocs
-
 export function isSquareSequenceConsecutive(sortedArrayOfSquareObjects) {
   if (sortedArrayOfSquareObjects.length === 1) {
     return true;
@@ -93,13 +90,11 @@ export function isSquareSequenceConsecutive(sortedArrayOfSquareObjects) {
 }
 
 function isShipStraight(arrayOfSquareObjects) {
+  const x = arrayOfSquareObjects[0].x;
+  const y = arrayOfSquareObjects[0].y;
   if (
-    arrayOfSquareObjects.every(
-      (square) => square.x === arrayOfSquareObjects[0].x
-    ) ||
-    arrayOfSquareObjects.every(
-      (square) => square.y === arrayOfSquareObjects[0].y
-    )
+    arrayOfSquareObjects.every((square) => square.x === x) ||
+    arrayOfSquareObjects.every((square) => square.y === y)
   ) {
     return true;
   }

@@ -14,18 +14,17 @@ export function Player(humanOrMachine, gameboard) {
       return new Promise((resolve) => {
         View.movePromiseCallback = resolve;
       });
-    } else if (isHuman === false) {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          const moveSquareName = computerMoveBetter(opponentsBoard);
-          if (moveSquareName) {
-            resolve(moveSquareName);
-          } else {
-            reject("Computer failed to move");
-          }
-        }, AIDelay);
-      });
     }
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const moveSquareName = computerMoveBetter(opponentsBoard);
+        if (moveSquareName) {
+          resolve(moveSquareName);
+        } else {
+          reject("Computer failed to move");
+        }
+      }, AIDelay);
+    });
   }
 
   const allPossibleSquares = allSquares();
@@ -37,30 +36,6 @@ export function Player(humanOrMachine, gameboard) {
 
     const potentialSquares =
       goodShots.length > 0 ? frontAndBack(goodShots) : allPossibleSquares;
-
-    /* let potentialSquares = allPossibleSquares;
-
-    if (goodShots.length === 1) {
-      potentialSquares = goodShots[0].adjacent;
-    } else if (goodShots.length > 1) {
-      potentialSquares = frontAndBack(goodShots); */
-
-    /* const minSquare = goodShots.at(0);
-      const maxSquare = goodShots.at(-1);
-      if (minSquare.x === maxSquare.x) {
-        //ship is vertical
-        const preMin = Square([minSquare.x, minSquare.y - 1]);
-        const postMax = Square([maxSquare.x, maxSquare.y + 1]);
-        potentialSquares = [preMin, postMax];
-      } else if (minSquare.y === maxSquare.y) {
-        //ship is horizontal
-        const preMin = Square([minSquare.x - 1, minSquare.y]);
-        const postMax = Square([maxSquare.x + 1, maxSquare.y]);
-        potentialSquares = [preMin, postMax];
-      } else {
-        console.warn("unexpected result");
-      } */
-    // }
 
     const candidateSquares = potentialSquares.filter(
       (square) =>
@@ -102,8 +77,6 @@ export function Player(humanOrMachine, gameboard) {
         localStorage.setItem("ships", JSON.stringify(defaultShipCoordinates));
       }
     } else {
-      //TODO: implement auto ship placement
-      //board.setShips(defaultShipCoordinates);
       const autoShipCoordinates = autoPosition();
       board.setShips(autoShipCoordinates);
     }
@@ -137,18 +110,6 @@ export function Player(humanOrMachine, gameboard) {
 
       //////////////////////////////////////////////////////////////////////
       while (newShipSquares.length < shipSize) {
-        /* console.log(
-          "newShipSquares",
-          newShipSquares.map((s) => s.name)
-        ); */
-        /* const _potentialSquares = frontAndBack(newShipSquares);
-        console.log(
-          "potential(frontAndBack)",
-          _potentialSquares.map((s) => s.name)
-        );
-        const potentialSquares = _potentialSquares.filter((square) => {
-          return !!square && available.squareNames.includes(square.name);
-        }); */
         const potentialSquares = frontAndBack(newShipSquares).filter(
           (square) => {
             return !!square && available.squareNames.includes(square.name);
@@ -157,16 +118,11 @@ export function Player(humanOrMachine, gameboard) {
         if (potentialSquares.length === 0) {
           //try again
           console.log("ships collision");
-          /* console.warn(
-            "newShipSquares on collision",
-            newShipSquares.map((s) => s.name)
-          ); */
           newShipSquares.length = 0;
           newShipSquares.push(spliceRandomSquare(available.squares));
         } else {
           newShipSquares.push(spliceRandomSquare(potentialSquares));
           available.remove(newShipSquares);
-          //console.log("available: ", available.squareNames.length);
         }
       }
       //////////////////////////////////////////////////////////////////////
@@ -194,7 +150,6 @@ export function Player(humanOrMachine, gameboard) {
       return undefined;
     }
 
-    //console.log("shipCoordinatesArray before return", shipCoordinatesArray);
     return shipCoordinatesArray;
 
     /**
@@ -204,9 +159,6 @@ export function Player(humanOrMachine, gameboard) {
      */
     function spliceRandomSquare(squares) {
       const randomIndex = Math.floor(Math.random() * squares.length);
-      //const spliced = squares.splice(randomIndex, 1).at(0);
-      /* console.log({ spliced });
-      return spliced; */
       return squares.splice(randomIndex, 1).at(0);
     }
   }
@@ -224,6 +176,12 @@ export function Player(humanOrMachine, gameboard) {
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
+/**
+ * Return an array of squares that are at the ends of input squares.
+ *
+ * @param {[]}
+ * @returns {[]}
+ */
 export function frontAndBack(arrayOfSquareObjects) {
   const sortedArrayOfSquareObjects = [...arrayOfSquareObjects].sort(
     (a, b) => a.sum - b.sum
