@@ -3,7 +3,17 @@ const {
   checkIfOnBoard,
   squareNameToCoordinates,
   coordinatesToSquareName,
+  allSquares,
 } = require("./square.js");
+
+let spy;
+beforeEach(() => {
+  spy = jest.spyOn(console, "error").mockImplementation(() => null);
+  spy = jest.spyOn(console, "warn").mockImplementation(() => null);
+});
+afterEach(() => {
+  spy.mockRestore();
+});
 
 test("Square from name", () => {
   expect(Square("j10").name).toBe("j10");
@@ -65,4 +75,13 @@ test("Onboard check", () => {
   expect(checkIfOnBoard([1, 1])).toBe(true);
   expect(checkIfOnBoard([10, 1])).toBe(false);
   expect(checkIfOnBoard([1, 1, 1])).toBe(false);
+});
+
+test("Sum", () => {
+  expect(Square([9, 9]).sum).toBe(18);
+});
+
+test("All squares", () => {
+  expect(Array.isArray(allSquares())).toBe(true);
+  expect(allSquares().length).toBe(100);
 });

@@ -3,6 +3,15 @@ const { allSquares } = require("./utilities.js");
 const { Gameboard } = require("./gameboard.js");
 const Square = require("./square.js").default;
 
+let spy;
+beforeEach(() => {
+  spy = jest.spyOn(console, "error").mockImplementation(() => null);
+  spy = jest.spyOn(console, "warn").mockImplementation(() => null);
+});
+afterEach(() => {
+  spy.mockRestore();
+});
+
 xtest("AI makes move", async () => {
   const allSquaresButD6 = allSquares().filter((item) => item !== "d6");
   const player = Player("machine");

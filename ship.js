@@ -2,6 +2,9 @@ import Square from "./square.js";
 
 export function Ship(arrayOfSquareNames) {
   const arrayOfSquareObjects = arrayOfSquareNames.map((name) => Square(name));
+  if (arrayOfSquareObjects.includes(null)) {
+    return null;
+  }
   const _squares = sortSquares(arrayOfSquareObjects);
   if (!validateInput(_squares)) {
     return null;

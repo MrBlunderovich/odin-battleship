@@ -1,5 +1,14 @@
 const { Gameboard } = require("./gameboard.js");
 
+let spy;
+beforeEach(() => {
+  spy = jest.spyOn(console, "error").mockImplementation(() => null);
+  spy = jest.spyOn(console, "warn").mockImplementation(() => null);
+});
+afterEach(() => {
+  spy.mockRestore();
+});
+
 const defaultShips = [
   ["a1", "a1"],
   ["a3", "a3"],
@@ -12,13 +21,6 @@ const defaultShips = [
   ["e1", "e3"],
   ["j1", "j4"],
 ];
-
-/* test("Gameboard ship placement", () => {
-  const newBoard = Gameboard();
-  expect(newBoard.ships.length).toBe(0);
-  newBoard.addShips(defaultShips);
-  expect(newBoard.ships.length).toBe(10);
-}); */
 
 test("Gameboard receive attacks", () => {
   const newBoard = Gameboard();

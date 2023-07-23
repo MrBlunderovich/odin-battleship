@@ -123,7 +123,7 @@ export function squareNameToCoordinates(square) {
     return null;
   }
   if (!checkIfOnBoard([x, y])) {
-    console.log("invalid input");
+    console.warn("invalid input");
     return null;
   }
   return [x, y];
@@ -136,7 +136,7 @@ export function squareNameToCoordinates(square) {
  */
 export function coordinatesToSquareName([x, y]) {
   if (!checkIfOnBoard([x, y])) {
-    console.log("invalid input");
+    console.warn("invalid input");
     return null;
   }
   return String.fromCharCode(x + 97) + (y + 1);

@@ -1,11 +1,20 @@
 const { Ship, names, isSquareSequenceConsecutive } = require("./ship.js");
 const Square = require("./square.js").default;
 
-xtest("Ship refuses incorrect coordinates", () => {
-  expect(() => Ship(["a1", "a10"])).toThrow();
-  expect(() => Ship(["a1", "f1"])).toThrow();
-  expect(() => Ship(["a1", "b3"])).toThrow();
-  expect(() => Ship(["a0", "a1"])).toThrow();
+let spy;
+beforeEach(() => {
+  spy = jest.spyOn(console, "error").mockImplementation(() => null);
+  spy = jest.spyOn(console, "warn").mockImplementation(() => null);
+});
+afterEach(() => {
+  spy.mockRestore();
+});
+
+test("Ship refuses incorrect coordinates", () => {
+  expect(Ship(["a1", "a10"])).toBe(null);
+  expect(Ship(["a1", "f1"])).toBe(null);
+  expect(Ship(["a1", "b3"])).toBe(null);
+  expect(Ship(["a0", "a1"])).toBe(null);
 });
 
 test("Ship gets hits and sinks properly", () => {
@@ -19,7 +28,7 @@ test("Ship gets hits and sinks properly", () => {
   expect(newShip.isSunk()).toBe(true);
 });
 
-test("Area around ship", () => {
+test("Perimeter", () => {
   const newShip = Ship(["a1", "a2", "a3"]);
   expect(names(newShip.perimeter)).toContain("b1");
   expect(names(newShip.perimeter)).toContain("b2");
