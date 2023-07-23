@@ -10,7 +10,11 @@ export default function Square(coordinates) {
     (coordinates.length === 2 || coordinates.length === 3)
   ) {
     name = coordinates;
-    [_x, _y] = squareNameToCoordinates(name);
+    const coordinatesXY = squareNameToCoordinates(name);
+    if (coordinatesXY === null) {
+      return null;
+    }
+    [_x, _y] = coordinatesXY;
   } else if (Array.isArray(coordinates) && coordinates.length === 2) {
     if (!checkIfOnBoard(coordinates)) {
       return null;
@@ -18,16 +22,13 @@ export default function Square(coordinates) {
     _x = coordinates[0];
     _y = coordinates[1];
     name = coordinatesToSquareName(coordinates);
+    if (name === null) {
+      return null;
+    }
   } else {
     console.warn("Square received unexpected input: ", coordinates);
     return null;
-    //throw new Error("Wrong input");
   }
-
-  /* function randomCoordinates(){
-    function random(){return Math.floor(Math.random()*10)}
-    return [random(),random()]
-  } */
 
   function _adjacent(_x, _y) {
     const adjacentCoordinates = [
@@ -118,8 +119,12 @@ export function squareNameToCoordinates(square) {
   const letter = square.slice(0, 1);
   const x = letter.charCodeAt() - 97;
   const y = +square.slice(1) - 1;
+  if (isNaN(y) || isNaN(x)) {
+    return null;
+  }
   if (!checkIfOnBoard([x, y])) {
-    throw new Error("invalid input");
+    console.log("invalid input");
+    return null;
   }
   return [x, y];
 }
@@ -131,7 +136,8 @@ export function squareNameToCoordinates(square) {
  */
 export function coordinatesToSquareName([x, y]) {
   if (!checkIfOnBoard([x, y])) {
-    throw new Error("invalid input");
+    console.log("invalid input");
+    return null;
   }
   return String.fromCharCode(x + 97) + (y + 1);
 }

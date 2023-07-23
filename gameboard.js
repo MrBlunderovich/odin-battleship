@@ -1,4 +1,4 @@
-import { Ship, removeDuplicateSquares } from "./ship.js";
+import { Ship } from "./ship.js";
 import Square from "./square.js";
 
 export function Gameboard() {

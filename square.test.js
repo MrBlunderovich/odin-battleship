@@ -23,15 +23,15 @@ test("Square from coordinates", () => {
   expect(Square([0, 0]).y).toBe(0);
 });
 
-xtest("Bad input", () => {
-  expect(Square([10, 9]).name).toThrow("invalid input");
-  expect(Square([9, 9, 9]).name).toThrow("invalid input");
-  expect(Square([1]).name).toThrow("invalid input");
-  expect(Square("a11").name).toThrow("invalid input");
-  expect(Square("aa1").name).toThrow("invalid input");
-  expect(Square("a").name).toThrow("invalid input");
-  expect(Square("1").name).toThrow("invalid input");
-  expect(Square("[1,1]").name).toThrow("invalid input");
+test("Bad input", () => {
+  expect(Square([10, 9])).toBe(null);
+  expect(Square([9, 9, 9])).toBe(null);
+  expect(Square([1])).toBe(null);
+  expect(Square("a11")).toBe(null);
+  expect(Square("aa1")).toBe(null);
+  expect(Square("a")).toBe(null);
+  expect(Square("1")).toBe(null);
+  expect(Square("[1, 1]")).toBe(null);
 });
 
 test("Adjacent", () => {
@@ -57,6 +57,8 @@ test("Square name and coordinates conversion", () => {
   expect(squareNameToCoordinates(coordinatesToSquareName([1, 9]))[0]).toBe(1);
   expect(squareNameToCoordinates(coordinatesToSquareName([1, 9]))[1]).toBe(9);
   expect(coordinatesToSquareName(squareNameToCoordinates("d3"))[0]).toBe("d");
+  expect(squareNameToCoordinates("k3")).toBe(null);
+  expect(coordinatesToSquareName([10, 1])).toBe(null);
 });
 
 test("Onboard check", () => {
