@@ -5,7 +5,6 @@ export function Gameboard() {
   const ships = [];
   const hits = [];
   const goodShots = [];
-  //const sunkShipsSquareNames = [];
 
   function receiveAttack(squareName) {
     hits.push(squareName);
@@ -14,7 +13,6 @@ export function Gameboard() {
         ship.hit();
         if (ship.isSunk()) {
           goodShots.length = 0;
-          //sunkShipsSquareNames.push(...ship.squareNames);
         } else {
           goodShots.push(squareName);
         }
@@ -23,14 +21,6 @@ export function Gameboard() {
     }
     return false;
   }
-
-  /* function areAllSunk() {
-    if (ships.length === 0) {
-      console.warn("ships.length equals zero");
-      return null;
-    }
-    return sunkShipsSquareNames.length === 20;
-  } */
 
   function areAllSunk() {
     if (ships.length === 0) {
@@ -46,7 +36,6 @@ export function Gameboard() {
     const newFleet = [];
     for (let arrayOfSquareNames of arrayOfArraysOfSquareNames) {
       const newShip = Ship(arrayOfSquareNames);
-      //console.log(newShip ? newShip.squareNames : newShip);
       if (newShip) {
         newFleet.push(newShip);
       }
@@ -54,7 +43,6 @@ export function Gameboard() {
     if (newFleet.length === 10) {
       ships.length = 0;
       ships.push(...newFleet);
-      //console.log(ships.map((s) => s.squareNames));
       return ships;
     }
     //console.warn("bad Ships");
@@ -136,7 +124,6 @@ export function Gameboard() {
   }
 
   return {
-    //sunkShipsSquareNames,
     ships,
     setShips,
     hits,
