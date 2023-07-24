@@ -45,6 +45,7 @@ export function Gameboard() {
       ships.push(...newFleet);
       return ships;
     }
+
     //console.warn("bad Ships");
     throw new Error("bad Ships");
     //return null;
