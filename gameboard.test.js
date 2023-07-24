@@ -1,4 +1,5 @@
 const { Gameboard } = require("./gameboard.js");
+const { Ship } = require("./ship.js");
 
 let spy;
 beforeEach(() => {
@@ -21,6 +22,8 @@ const defaultShips = [
   ["h10", "i10", "j10"],
   ["j8", "j7", "j6", "j5"],
 ];
+/* 
+const shipObjects = defaultShips.map((coords) => Ship(coords)); */
 
 test("Gameboard receives attacks", () => {
   const newBoard = Gameboard();
