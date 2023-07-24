@@ -10,21 +10,21 @@ afterEach(() => {
 });
 
 const defaultShips = [
-  ["a1", "a1"],
-  ["a3", "a3"],
-  ["a5", "a5"],
-  ["a7", "a7"],
-  ["a9", "a10"],
-  ["c9", "c10"],
-  ["e9", "e10"],
-  ["c1", "c3"],
-  ["e1", "e3"],
-  ["j1", "j4"],
+  ["c1"],
+  ["a1"],
+  ["a3"],
+  ["a5"],
+  ["a7", "a8"],
+  ["a10", "b10"],
+  ["j3", "j2"],
+  ["d10", "e10", "f10"],
+  ["h10", "i10", "j10"],
+  ["j8", "j7", "j6", "j5"],
 ];
 
-test("Gameboard receive attacks", () => {
+test("Gameboard receives attacks", () => {
   const newBoard = Gameboard();
-  newBoard.addShips(defaultShips);
+  newBoard.setShips(defaultShips);
   expect(newBoard.hits[0]).toBe(undefined);
   expect(newBoard.receiveAttack("a1")).toBe(true);
   expect(newBoard.hits[0]).toBe("a1");
@@ -33,16 +33,16 @@ test("Gameboard receive attacks", () => {
 
 test("Gameboard marks hits and sunk ships' perimeter squares", () => {
   const newBoard = Gameboard();
-  newBoard.addShips(defaultShips);
-  expect(newBoard.markedSquares().length).toBe(0);
+  newBoard.setShips(defaultShips);
+  expect(newBoard.markedSquareNames.length).toBe(0);
   newBoard.receiveAttack("a1");
-  expect(newBoard.markedSquares().length).toBe(4);
+  expect(newBoard.markedSquareNames.length).toBe(4);
 });
 
 test("Gameboard detect defeat", () => {
   const newBoard = Gameboard();
-  expect(newBoard.areAllSunk()).toBe(undefined);
-  newBoard.addShips(defaultShips);
+  expect(newBoard.areAllSunk()).toBe(null);
+  newBoard.setShips(defaultShips);
   expect(newBoard.areAllSunk()).toBe(false);
   newBoard.ships.forEach((ship) => {
     ship.hit();
